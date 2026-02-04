@@ -1,10 +1,10 @@
 import './App.css'
+import { NameDisplay } from './components'
 
 function App() {
   return (
     <div className="app">
-      <h1>Alien Arena Mobile</h1>
-      <p>Combat Simulator</p>
+      <NameDisplay name="RIPLEY" />
     </div>
   )
 }

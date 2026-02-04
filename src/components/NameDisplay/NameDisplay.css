@@ -1,0 +1,31 @@
+.name-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-md);
+}
+
+.name-display__text {
+  font-family: var(--font-terminal);
+  font-size: var(--text-2xl);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Responsive scaling */
+@media (min-width: 480px) {
+  .name-display__text {
+    font-size: var(--text-3xl);
+  }
+}
+
+@media (min-width: 768px) {
+  .name-display__text {
+    font-size: 5rem;
+    letter-spacing: 0.15em;
+  }
+}
