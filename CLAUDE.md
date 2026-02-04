@@ -14,6 +14,12 @@ src/
 │   ├── molecules/       # Composed from atoms
 │   ├── organisms/       # Complex UI sections
 │   └── index.ts         # Barrel exports
+├── state/               # Global state management
+│   ├── types.ts         # State & action types
+│   ├── gameReducer.ts   # Reducer logic
+│   ├── GameContext.tsx  # React context provider
+│   ├── useGame.ts       # Custom hook for state access
+│   └── index.ts         # Barrel exports
 └── views/               # Full screens
 ```
 
@@ -36,6 +42,34 @@ src/
 
 ### Views
 - **CharacterSelector** - Full character selection screen with state management
+
+## State Management
+
+React Context + useReducer pattern for global game state.
+
+### GameState
+```ts
+{
+  characters: Character[]      // All characters with stats
+  playerCharacterId: string    // Selected player
+  enemyCharacterId: string     // Selected enemy
+  phase: 'character-select' | 'combat' | 'result'
+}
+```
+
+### Character
+```ts
+{
+  id, name, strength, agility, health, maxHealth
+}
+```
+
+### Usage
+```tsx
+import { useGame } from './state'
+
+const { characters, playerCharacter, updateCharacter, setPhase } = useGame()
+```
 
 ## Design System
 

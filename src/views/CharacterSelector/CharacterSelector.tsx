@@ -2,32 +2,16 @@ import { useState } from 'react';
 import { CharacterHeader } from '../../components/organisms/CharacterHeader';
 import { CombatStatsPanel } from '../../components/organisms/CombatStatsPanel';
 import { ProgressButton } from '../../components/atoms/ProgressButton';
+import { useGame } from '../../state';
 import './CharacterSelector.css';
 
-export interface Character {
-  id: string;
-  name: string;
-  strength: number;
-  agility: number;
-}
+export function CharacterSelector() {
+  const { characters, updateCharacter, selectPlayer, setPhase } = useGame();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-export interface CharacterSelectorProps {
-  characters: Character[];
-  initialIndex?: number;
-  onProgress?: (characters: Character[], currentIndex: number) => void;
-}
-
-export function CharacterSelector({
-  characters,
-  initialIndex = 0,
-  onProgress,
-}: CharacterSelectorProps) {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [editedCharacters, setEditedCharacters] = useState<Character[]>(characters);
-
-  const currentCharacter = editedCharacters[currentIndex];
+  const currentCharacter = characters[currentIndex];
   const hasPrev = currentIndex > 0;
-  const hasNext = currentIndex < editedCharacters.length - 1;
+  const hasNext = currentIndex < characters.length - 1;
 
   const handlePrev = () => {
     if (hasPrev) {
@@ -42,23 +26,22 @@ export function CharacterSelector({
   };
 
   const handleStrengthChange = (value: number) => {
-    setEditedCharacters((prev) =>
-      prev.map((char, idx) =>
-        idx === currentIndex ? { ...char, strength: value } : char
-      )
-    );
+    if (currentCharacter) {
+      updateCharacter(currentCharacter.id, { strength: value });
+    }
   };
 
   const handleAgilityChange = (value: number) => {
-    setEditedCharacters((prev) =>
-      prev.map((char, idx) =>
-        idx === currentIndex ? { ...char, agility: value } : char
-      )
-    );
+    if (currentCharacter) {
+      updateCharacter(currentCharacter.id, { agility: value });
+    }
   };
 
   const handleProgress = () => {
-    onProgress?.(editedCharacters, currentIndex);
+    if (currentCharacter) {
+      selectPlayer(currentCharacter.id);
+      setPhase('combat');
+    }
   };
 
   if (!currentCharacter) {
@@ -81,7 +64,7 @@ export function CharacterSelector({
         onAgilityChange={handleAgilityChange}
       />
       <div className="character-selector__footer">
-        <ProgressButton label="Skills" onClick={handleProgress} />
+        <ProgressButton label="Select" onClick={handleProgress} />
       </div>
     </div>
   );

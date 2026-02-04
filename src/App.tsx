@@ -1,23 +1,19 @@
 import './App.css'
-import { CharacterSelector, Character } from './views'
+import { GameProvider, Character } from './state'
+import { CharacterSelector } from './views'
 
-const characters: Character[] = [
-  { id: '1', name: 'RIPLEY', strength: 3, agility: 4 },
-  { id: '2', name: 'DALLAS', strength: 4, agility: 3 },
-  { id: '3', name: 'ASH', strength: 2, agility: 5 },
-  { id: '4', name: 'LAMBERT', strength: 2, agility: 4 },
+const initialCharacters: Character[] = [
+  { id: '1', name: 'RIPLEY', strength: 3, agility: 4, health: 10, maxHealth: 10 },
+  { id: '2', name: 'DALLAS', strength: 4, agility: 3, health: 12, maxHealth: 12 },
+  { id: '3', name: 'ASH', strength: 2, agility: 5, health: 8, maxHealth: 8 },
+  { id: '4', name: 'LAMBERT', strength: 2, agility: 4, health: 9, maxHealth: 9 },
 ]
 
 function App() {
-  const handleProgress = (updatedCharacters: Character[], currentIndex: number) => {
-    console.log('Progress to Skills with:', { updatedCharacters, currentIndex })
-  }
-
   return (
-    <CharacterSelector
-      characters={characters}
-      onProgress={handleProgress}
-    />
+    <GameProvider initialState={{ characters: initialCharacters }}>
+      <CharacterSelector />
+    </GameProvider>
   )
 }
 
