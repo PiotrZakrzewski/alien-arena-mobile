@@ -1,0 +1,11 @@
+.navigation-chevrons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .navigation-chevrons {
+    gap: var(--space-xl);
+  }
+}

@@ -1,0 +1,21 @@
+.combat-stats-panel {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  width: 100%;
+  padding: var(--space-lg) var(--space-md);
+}
+
+@media (min-width: 480px) {
+  .combat-stats-panel {
+    gap: calc(var(--space-xl) * 1.5);
+    padding: var(--space-xl);
+  }
+}
+
+@media (min-width: 768px) {
+  .combat-stats-panel {
+    gap: calc(var(--space-xl) * 2);
+    padding: var(--space-xl) var(--space-lg);
+  }
+}

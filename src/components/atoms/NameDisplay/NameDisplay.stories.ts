@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NameDisplay } from './NameDisplay';
 
 const meta = {
-  title: 'Components/NameDisplay',
+  title: 'Atoms/NameDisplay',
   component: NameDisplay,
   parameters: {
     layout: 'centered',

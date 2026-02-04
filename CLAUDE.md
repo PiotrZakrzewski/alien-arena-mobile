@@ -1,19 +1,41 @@
+keep CLAUDE.md up to date, esp any global choices like architecture, patterns, requirements, graphical design etc
 # Alien Arena Mobile
 
 Mobile web application simulating combat in Alien RPG Evolved Edition. Built step by step using modular blocks in Storybook.
 
 ## Current Deliverable: Character Selector
 
-### Components
+### Component Architecture (Atomic Design)
 
-- **Name Display** - Shows the character's name
-- **Navigation Chevrons** - Left/right arrows to swipe between characters
-- **Combat Stats** - Two stats displayed below the name:
-  - Strength (1-5)
-  - Agility (1-5)
-- **Info Icons** - Displayed above each stat, containing explanations of how the stats work in combat
-- **Stat Editors** - Plus/minus buttons to adjust Strength and Agility values
-- **Progress Button** - Advances to the next section (Skills)
+```
+src/
+├── components/
+│   ├── atoms/           # Indivisible building blocks
+│   ├── molecules/       # Composed from atoms
+│   ├── organisms/       # Complex UI sections
+│   └── index.ts         # Barrel exports
+└── views/               # Full screens
+```
+
+### Atoms
+- **IconButton** - Reusable button with icon (chevrons, +/-)
+- **InfoIcon** - "i" icon that shows tooltip on tap/hover
+- **NameDisplay** - Character name display
+- **ProgressButton** - CTA button to proceed
+- **StatLabel** - Text label for a stat ("STR", "AGI")
+- **StatValue** - Displays numeric value (1-5)
+
+### Molecules
+- **NavigationChevrons** - Left/right arrows (2x IconButton)
+- **StatEditor** - Plus/minus with value (IconButton + StatValue + IconButton)
+- **StatRow** - Full stat control (InfoIcon + StatLabel + StatEditor)
+
+### Organisms
+- **CharacterHeader** - Navigation + name display
+- **CombatStatsPanel** - STR and AGI stat rows
+
+### Views
+- **CharacterSelector** - Full character selection screen with state management
 
 ## Design System
 
@@ -38,3 +60,16 @@ Retro Sci-Fi Terminal - inspired by 80s computer interfaces from the original Al
 - Mobile: default (375px)
 - Mobile Large: 480px
 - Tablet: 768px
+
+## Development
+
+### Commands
+- `npm run dev` - Run the app locally
+- `npm run storybook` - Browse components in Storybook
+- `npm run build` - Production build
+
+### Conventions
+- Each component has its own folder with `.tsx`, `.css`, `index.ts`, and `.stories.ts(x)`
+- Story files using JSX decorators must use `.stories.tsx` extension
+- CSS uses BEM naming (e.g., `.stat-row__header`)
+- All components export types alongside components

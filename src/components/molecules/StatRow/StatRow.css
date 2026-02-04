@@ -1,0 +1,22 @@
+.stat-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.stat-row__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+@media (min-width: 768px) {
+  .stat-row {
+    gap: var(--space-lg);
+  }
+
+  .stat-row__header {
+    gap: var(--space-md);
+  }
+}
