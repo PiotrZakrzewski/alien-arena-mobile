@@ -43,6 +43,15 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         },
       }));
 
+    case 'UPDATE_TALENT':
+      return updateCharacterSlot(state, action.payload.role, (char) => ({
+        ...char,
+        talents: {
+          ...char.talents,
+          [action.payload.talentKey]: action.payload.value,
+        },
+      }));
+
     case 'SET_WEAPON':
       return updateCharacterSlot(state, action.payload.role, (char) => ({
         ...char,

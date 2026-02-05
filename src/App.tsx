@@ -1,16 +1,6 @@
 import './App.css'
 import { GameProvider, useGame } from './state'
-import { CharacterSelector, StatsEditor, SkillsEditor, ItemsEditor } from './views'
-
-const PLACEHOLDER_STYLE = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: '100vh',
-  color: 'var(--color-primary)',
-  fontFamily: 'var(--font-terminal)',
-  fontSize: 'var(--text-xl)',
-} as const
+import { CharacterSelector, StatsEditor, SkillsEditor, ItemsEditor, TalentsEditor } from './views'
 
 function PhaseRouter() {
   const { phase } = useGame()
@@ -25,7 +15,7 @@ function PhaseRouter() {
     case 'items':
       return <ItemsEditor />
     case 'talents':
-      return <div style={PLACEHOLDER_STYLE}>TALENTS SCREEN PLACEHOLDER</div>
+      return <TalentsEditor />
     case 'combat':
     case 'result':
     default:

@@ -4,11 +4,12 @@ import { GameProvider, Character } from '../../state';
 
 const samplePlayer: Character = {
   id: 'char-story-1',
-  presetId: 'ripley',
-  name: 'RIPLEY',
-  description: 'Resourceful warrant officer. Balances quick reflexes with steady nerves under pressure.',
-  strength: 3,
-  agility: 4,
+  presetId: 'marine',
+  name: 'MARINE',
+  description: 'Trained for frontline combat. Reliable with any weapon, unshakeable under fire.',
+  career: 'marine',
+  strength: 4,
+  agility: 3,
   health: 10,
   maxHealth: 10,
   skills: { closeCombat: 2, rangedCombat: 3, mobility: 1, stamina: 2 },

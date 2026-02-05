@@ -32,6 +32,13 @@ export function useGame() {
     [dispatch]
   );
 
+  const updateTalent = useCallback(
+    (role: CharacterRole, talentKey: string, value: number) => {
+      dispatch({ type: 'UPDATE_TALENT', payload: { role, talentKey, value } });
+    },
+    [dispatch]
+  );
+
   const setWeapon = useCallback(
     (role: CharacterRole, weapon: Weapon) => {
       dispatch({ type: 'SET_WEAPON', payload: { role, weapon } });
@@ -67,6 +74,7 @@ export function useGame() {
     selectCharacter,
     updateStat,
     updateSkill,
+    updateTalent,
     setWeapon,
     setArmor,
     setPhase,

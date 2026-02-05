@@ -1,3 +1,5 @@
+export type Career = 'marine' | 'marshal' | 'roughneck' | 'officer' | 'kid' | 'medic';
+
 export type RangeZone = 'adjacent' | 'short' | 'medium' | 'long' | 'extreme';
 
 export interface Weapon {
@@ -18,6 +20,7 @@ export interface Character {
   presetId: string;
   name: string;
   description: string;
+  career: Career;
   strength: number;
   agility: number;
   health: number;
@@ -44,5 +47,6 @@ export type GameAction =
   | { type: 'UPDATE_SKILL'; payload: { role: CharacterRole; skillKey: string; value: number } }
   | { type: 'SET_WEAPON'; payload: { role: CharacterRole; weapon: Weapon } }
   | { type: 'SET_ARMOR'; payload: { role: CharacterRole; armor: Armor } }
+  | { type: 'UPDATE_TALENT'; payload: { role: CharacterRole; talentKey: string; value: number } }
   | { type: 'SET_PHASE'; payload: GamePhase }
   | { type: 'RESET_COMBAT' };

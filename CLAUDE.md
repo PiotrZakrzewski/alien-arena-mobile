@@ -3,7 +3,7 @@ keep CLAUDE.md up to date, esp any global choices like architecture, patterns, r
 
 Mobile web application simulating combat in Alien RPG Evolved Edition. Built step by step using modular blocks in Storybook.
 
-## Current Deliverable: Items Editor
+## Current Deliverable: Talents Editor
 
 ### Component Architecture (Atomic Design)
 
@@ -19,6 +19,7 @@ src/
 │   ├── characterPresets.ts      # Static character templates
 │   ├── characterFactory.ts      # Preset → Character factory
 │   ├── equipmentDefinitions.ts  # Weapon/armor constants & defaults
+│   ├── talentDefinitions.ts     # Talent registry (career-filtered)
 │   └── index.ts                 # Barrel exports
 ├── state/               # Global state management
 │   ├── types.ts         # State & action types
@@ -54,16 +55,24 @@ src/
 - **StatsEditor** - Editable STR/AGI stats for selected character
 - **SkillsEditor** - Editable skills for selected character
 - **ItemsEditor** - Weapon type/stats and armor rating editor
+- **TalentsEditor** - Career-filtered talent picker with stackable talents
 
 ## Data Layer
 
+### Careers
+```ts
+type Career = 'marine' | 'marshal' | 'roughneck' | 'officer' | 'kid' | 'medic';
+```
+Each career is a preset with combat-appropriate stats. 6 careers replace the original movie-character presets.
+
 ### Character Presets (src/data/characterPresets.ts)
-Static, read-only templates. Never mutated at runtime.
+Static, read-only templates. Never mutated at runtime. One preset per career.
 ```ts
 interface CharacterPreset {
-  id: string;           // 'ripley'
-  name: string;         // 'RIPLEY'
+  id: string;           // 'marine'
+  name: string;         // 'MARINE'
   description: string;  // Short flavor text for preset browsing
+  career: Career;       // Career type for talent filtering
   strength: number;
   agility: number;
   maxHealth: number;
@@ -94,6 +103,19 @@ const SKILL_DEFINITIONS: SkillDefinition[] = [
 ];
 ```
 
+### Talent Definitions (src/data/talentDefinitions.ts)
+```ts
+interface TalentDefinition {
+  key: string;                      // 'overkill'
+  label: string;                    // 'OVERKILL'
+  description: string;              // Tooltip text
+  maxStacks: number;                // 1 or 3
+  careers: Career[] | 'all';        // Which careers can select this talent
+}
+```
+7 career-specific talents (1-2 per career) + 3 general talents (available to all).
+Stackable talents (seenItAll, weaponSpecialist) allow values up to maxStacks (3).
+
 ## State Management
 
 React Context + useReducer pattern for global game state. State uses direct character slots (not arrays) — designed to be serialized/deserialized directly for persistence.
@@ -114,6 +136,7 @@ React Context + useReducer pattern for global game state. State uses direct char
   presetId: string;        // Links back to template
   name: string;
   description: string;     // Copied from preset
+  career: Career;          // Career type (copied from preset)
   strength: number;
   agility: number;
   health: number;
@@ -121,7 +144,7 @@ React Context + useReducer pattern for global game state. State uses direct char
   skills: Record<string, number>;
   weapon: Weapon;          // Equipped weapon (unarmed/close/ranged)
   armor: Armor;            // Equipped armor (rating 0-3)
-  talents: Record<string, number>;  // Ready for Talents phase
+  talents: Record<string, number>;  // Key = talent key, value = stack count
 }
 ```
 
@@ -157,6 +180,7 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 | `UPDATE_SKILL` | Edit a skill on active character |
 | `SET_WEAPON` | Replace weapon on active character |
 | `SET_ARMOR` | Replace armor on active character |
+| `UPDATE_TALENT` | Edit a talent stack on active character |
 | `SET_PHASE` | Navigate phases |
 | `RESET_COMBAT` | Restore health, reset phase |
 
@@ -164,14 +188,14 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 ```tsx
 import { useGame } from './state'
 
-const { playerCharacter, selectCharacter, updateStat, updateSkill, setWeapon, setArmor, setPhase } = useGame()
+const { playerCharacter, selectCharacter, updateStat, updateSkill, updateTalent, setWeapon, setArmor, setPhase } = useGame()
 ```
 
 ## Navigation Flow
 
 ```
-CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor (future) → Combat
-                              ← [Back] ←    ← [Stats] ←              ← [Skills] ←          ← ...
+CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor → [Combat] → Combat
+                              ← [Back] ←    ← [Stats] ←              ← [Skills] ←          ← [Items] ←
 ```
 
 - App.tsx routes based on `phase` state

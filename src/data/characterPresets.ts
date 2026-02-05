@@ -1,7 +1,10 @@
+import { Career } from '../state/types';
+
 export interface CharacterPreset {
   id: string;
   name: string;
   description: string;
+  career: Career;
   strength: number;
   agility: number;
   maxHealth: number;
@@ -10,37 +13,61 @@ export interface CharacterPreset {
 
 export const CHARACTER_PRESETS: CharacterPreset[] = [
   {
-    id: 'ripley',
-    name: 'RIPLEY',
-    description: 'Resourceful warrant officer. Balances quick reflexes with steady nerves under pressure.',
-    strength: 3,
-    agility: 4,
+    id: 'marine',
+    name: 'MARINE',
+    description: 'Trained for frontline combat. Reliable with any weapon, unshakeable under fire.',
+    career: 'marine',
+    strength: 4,
+    agility: 3,
     maxHealth: 10,
     skills: {},
   },
   {
-    id: 'dallas',
-    name: 'DALLAS',
-    description: 'Seasoned captain built for endurance. Relies on brute force when diplomacy fails.',
-    strength: 4,
+    id: 'marshal',
+    name: 'MARSHAL',
+    description: 'Frontier law officer. Skilled at subduing suspects and maintaining order.',
+    career: 'marshal',
+    strength: 3,
     agility: 3,
-    maxHealth: 12,
+    maxHealth: 10,
     skills: {},
   },
   {
-    id: 'ash',
-    name: 'ASH',
-    description: 'Science officer with uncanny precision. Fragile frame but exceptional reaction speed.',
+    id: 'roughneck',
+    name: 'ROUGHNECK',
+    description: 'Blue-collar spacer built like a bulldozer. Takes a beating and keeps going.',
+    career: 'roughneck',
+    strength: 5,
+    agility: 2,
+    maxHealth: 11,
+    skills: {},
+  },
+  {
+    id: 'officer',
+    name: 'OFFICER',
+    description: 'Born leader who keeps the crew together. Commands respect under pressure.',
+    career: 'officer',
+    strength: 3,
+    agility: 3,
+    maxHealth: 9,
+    skills: {},
+  },
+  {
+    id: 'kid',
+    name: 'KID',
+    description: 'Young and quick. What they lack in strength they make up in reflexes and luck.',
+    career: 'kid',
     strength: 2,
     agility: 5,
     maxHealth: 8,
     skills: {},
   },
   {
-    id: 'lambert',
-    name: 'LAMBERT',
-    description: 'Navigator trained in evasion. Light on her feet but not built for a prolonged fight.',
-    strength: 2,
+    id: 'medic',
+    name: 'MEDIC',
+    description: 'Combat medic trained to save lives under fire. Steady hands in the worst conditions.',
+    career: 'medic',
+    strength: 3,
     agility: 4,
     maxHealth: 9,
     skills: {},
