@@ -12,7 +12,8 @@ const samplePlayer: Character = {
   health: 10,
   maxHealth: 10,
   skills: {},
-  items: {},
+  weapon: { type: 'unarmed', modifier: 0, damage: 1, minRange: 'adjacent', maxRange: 'adjacent', armorPiercing: false },
+  armor: { rating: 0 },
   talents: {},
 };
 

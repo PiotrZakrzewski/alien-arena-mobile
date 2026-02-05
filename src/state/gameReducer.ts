@@ -43,6 +43,18 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         },
       }));
 
+    case 'SET_WEAPON':
+      return updateCharacterSlot(state, action.payload.role, (char) => ({
+        ...char,
+        weapon: action.payload.weapon,
+      }));
+
+    case 'SET_ARMOR':
+      return updateCharacterSlot(state, action.payload.role, (char) => ({
+        ...char,
+        armor: action.payload.armor,
+      }));
+
     case 'SET_PHASE':
       return { ...state, phase: action.payload };
 

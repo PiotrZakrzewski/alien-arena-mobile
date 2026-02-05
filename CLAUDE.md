@@ -3,7 +3,7 @@ keep CLAUDE.md up to date, esp any global choices like architecture, patterns, r
 
 Mobile web application simulating combat in Alien RPG Evolved Edition. Built step by step using modular blocks in Storybook.
 
-## Current Deliverable: Skills Editor
+## Current Deliverable: Items Editor
 
 ### Component Architecture (Atomic Design)
 
@@ -15,10 +15,11 @@ src/
 │   ├── organisms/       # Complex UI sections
 │   └── index.ts         # Barrel exports
 ├── data/                # Static game data
-│   ├── skillDefinitions.ts   # Skill registry
-│   ├── characterPresets.ts   # Static character templates
-│   ├── characterFactory.ts   # Preset → Character factory
-│   └── index.ts              # Barrel exports
+│   ├── skillDefinitions.ts      # Skill registry
+│   ├── characterPresets.ts      # Static character templates
+│   ├── characterFactory.ts      # Preset → Character factory
+│   ├── equipmentDefinitions.ts  # Weapon/armor constants & defaults
+│   └── index.ts                 # Barrel exports
 ├── state/               # Global state management
 │   ├── types.ts         # State & action types
 │   ├── gameReducer.ts   # Reducer logic
@@ -52,6 +53,7 @@ src/
 - **CharacterSelector** - Browse presets with description text, select copies preset to active character
 - **StatsEditor** - Editable STR/AGI stats for selected character
 - **SkillsEditor** - Editable skills for selected character
+- **ItemsEditor** - Weapon type/stats and armor rating editor
 
 ## Data Layer
 
@@ -73,7 +75,7 @@ interface CharacterPreset {
 ```ts
 function createCharacterFromPreset(preset: CharacterPreset): Character
 ```
-Deep-copies a preset into a full Character with initialized health, empty items/talents.
+Deep-copies a preset into a full Character with initialized health, default weapon (unarmed), no armor, empty talents.
 
 ### Skill Definitions (src/data/skillDefinitions.ts)
 ```ts
@@ -117,10 +119,33 @@ React Context + useReducer pattern for global game state. State uses direct char
   health: number;
   maxHealth: number;
   skills: Record<string, number>;
-  items: Record<string, number>;    // Ready for Items phase
+  weapon: Weapon;          // Equipped weapon (unarmed/close/ranged)
+  armor: Armor;            // Equipped armor (rating 0-3)
   talents: Record<string, number>;  // Ready for Talents phase
 }
 ```
+
+### Equipment Types
+```ts
+type RangeZone = 'adjacent' | 'short' | 'medium' | 'long' | 'extreme';
+
+interface Weapon {
+  type: 'unarmed' | 'close' | 'ranged';
+  modifier: number;      // bonus dice: 0-1 (close), 0-3 (ranged)
+  damage: number;        // base damage: 1 (unarmed), 1-3 (close), 1-4 (ranged)
+  minRange: RangeZone;   // minimum effective range
+  maxRange: RangeZone;   // maximum range
+  armorPiercing: boolean;
+}
+
+interface Armor {
+  rating: number;  // 0 = none, 1-3 for personal armor
+}
+```
+
+Close combat weapons always have range Adjacent/Adjacent.
+Ranged weapons have variable min/max range.
+Armor piercing reduces target armor by 1 step.
 
 ### Actions
 All character-mutating actions take a `role: 'player' | 'enemy'` field.
@@ -130,6 +155,8 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 | `SELECT_CHARACTER` | Clone preset → slot |
 | `UPDATE_STAT` | Edit strength/agility on active character |
 | `UPDATE_SKILL` | Edit a skill on active character |
+| `SET_WEAPON` | Replace weapon on active character |
+| `SET_ARMOR` | Replace armor on active character |
 | `SET_PHASE` | Navigate phases |
 | `RESET_COMBAT` | Restore health, reset phase |
 
@@ -137,14 +164,14 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 ```tsx
 import { useGame } from './state'
 
-const { playerCharacter, selectCharacter, updateStat, updateSkill, setPhase } = useGame()
+const { playerCharacter, selectCharacter, updateStat, updateSkill, setWeapon, setArmor, setPhase } = useGame()
 ```
 
 ## Navigation Flow
 
 ```
-CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor (future) → TalentsEditor (future) → Combat
-                              ← [Back] ←    ← [Stats] ←              ← ...
+CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor (future) → Combat
+                              ← [Back] ←    ← [Stats] ←              ← [Skills] ←          ← ...
 ```
 
 - App.tsx routes based on `phase` state

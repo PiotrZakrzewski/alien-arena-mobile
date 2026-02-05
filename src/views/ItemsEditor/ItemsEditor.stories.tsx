@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { SkillsEditor } from './SkillsEditor';
+import { ItemsEditor } from './ItemsEditor';
 import { GameProvider, Character } from '../../state';
 
 const samplePlayer: Character = {
@@ -18,8 +18,8 @@ const samplePlayer: Character = {
 };
 
 const meta = {
-  title: 'Views/SkillsEditor',
-  component: SkillsEditor,
+  title: 'Views/ItemsEditor',
+  component: ItemsEditor,
   parameters: {
     layout: 'fullscreen',
   },
@@ -29,27 +29,49 @@ const meta = {
       <GameProvider
         initialState={{
           playerCharacter: samplePlayer,
-          phase: 'skills',
+          phase: 'items',
         }}
       >
         <Story />
       </GameProvider>
     ),
   ],
-} satisfies Meta<typeof SkillsEditor>;
+} satisfies Meta<typeof ItemsEditor>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const EmptySkills: Story = {
+export const WithCloseWeapon: Story = {
   decorators: [
     (Story) => (
       <GameProvider
         initialState={{
-          playerCharacter: { ...samplePlayer, skills: {} },
-          phase: 'skills',
+          playerCharacter: {
+            ...samplePlayer,
+            weapon: { type: 'close', modifier: 1, damage: 2, minRange: 'adjacent', maxRange: 'adjacent', armorPiercing: false },
+          },
+          phase: 'items',
+        }}
+      >
+        <Story />
+      </GameProvider>
+    ),
+  ],
+};
+
+export const WithRangedWeapon: Story = {
+  decorators: [
+    (Story) => (
+      <GameProvider
+        initialState={{
+          playerCharacter: {
+            ...samplePlayer,
+            weapon: { type: 'ranged', modifier: 2, damage: 3, minRange: 'short', maxRange: 'long', armorPiercing: true },
+            armor: { rating: 2 },
+          },
+          phase: 'items',
         }}
       >
         <Story />

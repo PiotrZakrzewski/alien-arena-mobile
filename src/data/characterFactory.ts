@@ -1,4 +1,5 @@
 import { CharacterPreset } from './characterPresets';
+import { WEAPON_DEFAULTS } from './equipmentDefinitions';
 import { Character } from '../state/types';
 
 let nextId = 1;
@@ -14,7 +15,8 @@ export function createCharacterFromPreset(preset: CharacterPreset): Character {
     health: preset.maxHealth,
     maxHealth: preset.maxHealth,
     skills: { ...preset.skills },
-    items: {},
+    weapon: { ...WEAPON_DEFAULTS.unarmed },
+    armor: { rating: 0 },
     talents: {},
   };
 }
