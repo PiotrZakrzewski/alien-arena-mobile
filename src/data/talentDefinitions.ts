@@ -12,7 +12,7 @@ export const TALENT_DEFINITIONS: TalentDefinition[] = [
   {
     key: 'overkill',
     label: 'OVERKILL',
-    description: 'On panic 9+: enter combat frenzy, must attack until target broken.',
+    description: 'On panic 9+: enter overkill mode. Must attack until all enemies in sight broken. All PCs in zone make panic roll.',
     maxStacks: 1,
     careers: ['marine'],
   },
@@ -26,14 +26,14 @@ export const TALENT_DEFINITIONS: TalentDefinition[] = [
   {
     key: 'resilient',
     label: 'RESILIENT',
-    description: 'Roll Strength to reduce incoming damage.',
+    description: 'Roll Strength (attribute only, no skill) when taking damage to reduce it. Cannot be pushed.',
     maxStacks: 1,
     careers: ['roughneck'],
   },
   {
     key: 'trueGrit',
     label: 'TRUE GRIT',
-    description: 'Can push Strength-based skills twice.',
+    description: 'Can push Strength-based skills twice (+1 stress per push).',
     maxStacks: 1,
     careers: ['roughneck'],
   },
@@ -47,7 +47,7 @@ export const TALENT_DEFINITIONS: TalentDefinition[] = [
   {
     key: 'nimble',
     label: 'NIMBLE',
-    description: 'Can push Agility-based skills twice.',
+    description: 'Can push Agility-based skills twice (+1 stress per push).',
     maxStacks: 1,
     careers: ['kid'],
   },
@@ -61,7 +61,7 @@ export const TALENT_DEFINITIONS: TalentDefinition[] = [
   {
     key: 'haymaker',
     label: 'HAYMAKER',
-    description: '+2 dice to close combat attack.',
+    description: '+2 dice to close combat attack. Can also make unarmed attack as quick action (-2 dice).',
     maxStacks: 1,
     careers: 'all',
   },
@@ -75,7 +75,7 @@ export const TALENT_DEFINITIONS: TalentDefinition[] = [
   {
     key: 'weaponSpecialist',
     label: 'WEAPON SPECIALIST',
-    description: '+2 dice with equipped weapon.',
+    description: '+2 dice with a specific weapon model. Can take multiple times for different weapons.',
     maxStacks: 3,
     careers: 'all',
   },

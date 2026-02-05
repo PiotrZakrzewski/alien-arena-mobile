@@ -10,24 +10,24 @@ export const SKILL_DEFINITIONS: SkillDefinition[] = [
     key: 'closeCombat',
     label: 'CLOSE COMBAT',
     baseStat: 'strength',
-    description: 'Skill in melee fighting, grappling, and hand-to-hand combat.',
+    description: 'Melee attacks, defense against close combat, and grappling. Used at Adjacent range.',
   },
   {
     key: 'rangedCombat',
     label: 'RANGED COMBAT',
     baseStat: 'agility',
-    description: 'Proficiency with firearms, thrown weapons, and ranged attacks.',
+    description: 'Firing ranged weapons at Short range or beyond. Opposed by target Mobility when dodging.',
   },
   {
     key: 'mobility',
     label: 'MOBILITY',
     baseStat: 'agility',
-    description: 'Ability to move quickly, dodge attacks, and navigate obstacles.',
+    description: 'Dodge ranged attacks, break free from grapples, jump and climb.',
   },
   {
     key: 'stamina',
     label: 'STAMINA',
     baseStat: 'strength',
-    description: 'Physical endurance and resistance to fatigue and injury.',
+    description: 'Resist stun damage and survive hazardous conditions.',
   },
 ];

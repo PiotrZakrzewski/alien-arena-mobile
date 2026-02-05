@@ -10,8 +10,8 @@ export interface CombatStatsPanelProps {
 }
 
 const STAT_TOOLTIPS = {
-  strength: 'Strength determines your damage in melee combat and ability to resist physical effects.',
-  agility: 'Agility affects your accuracy, dodge chance, and movement speed during combat.',
+  strength: 'Raw physical power and endurance. Base attribute for Close Combat and Stamina rolls.',
+  agility: 'Speed and reflexes. Base attribute for Ranged Combat and Mobility rolls. Determines initiative.',
 };
 
 export function CombatStatsPanel({

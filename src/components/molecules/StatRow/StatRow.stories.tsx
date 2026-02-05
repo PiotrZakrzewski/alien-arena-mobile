@@ -41,7 +41,7 @@ type Story = StoryObj<typeof meta>;
 export const Strength: Story = {
   args: {
     label: 'STR',
-    tooltip: 'Strength determines your damage in melee combat and ability to resist physical effects.',
+    tooltip: 'Raw physical power and endurance. Base attribute for Close Combat and Stamina rolls.',
     value: 3,
   },
 };
@@ -49,7 +49,7 @@ export const Strength: Story = {
 export const Agility: Story = {
   args: {
     label: 'AGI',
-    tooltip: 'Agility affects your accuracy, dodge chance, and movement speed during combat.',
+    tooltip: 'Speed and reflexes. Base attribute for Ranged Combat and Mobility rolls. Determines initiative.',
     value: 4,
   },
 };

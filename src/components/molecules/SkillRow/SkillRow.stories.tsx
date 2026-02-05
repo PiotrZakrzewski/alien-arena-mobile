@@ -46,7 +46,7 @@ type Story = StoryObj<typeof meta>;
 export const CloseCombat: Story = {
   args: {
     label: 'CLOSE COMBAT',
-    tooltip: 'Skill in melee fighting, grappling, and hand-to-hand combat.',
+    tooltip: 'Melee attacks, defense against close combat, and grappling. Used at Adjacent range.',
     baseStat: 'strength',
     value: 2,
   },
@@ -55,7 +55,7 @@ export const CloseCombat: Story = {
 export const RangedCombat: Story = {
   args: {
     label: 'RANGED COMBAT',
-    tooltip: 'Proficiency with firearms, thrown weapons, and ranged attacks.',
+    tooltip: 'Firing ranged weapons at Short range or beyond. Opposed by target Mobility when dodging.',
     baseStat: 'agility',
     value: 3,
   },
@@ -64,7 +64,7 @@ export const RangedCombat: Story = {
 export const ZeroValue: Story = {
   args: {
     label: 'MOBILITY',
-    tooltip: 'Ability to move quickly, dodge attacks, and navigate obstacles.',
+    tooltip: 'Dodge ranged attacks, break free from grapples, jump and climb.',
     baseStat: 'agility',
     value: 0,
   },
@@ -73,7 +73,7 @@ export const ZeroValue: Story = {
 export const MaxValue: Story = {
   args: {
     label: 'STAMINA',
-    tooltip: 'Physical endurance and resistance to fatigue and injury.',
+    tooltip: 'Resist stun damage and survive hazardous conditions.',
     baseStat: 'strength',
     value: 5,
   },
