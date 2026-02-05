@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './InfoIcon.css';
 
 export interface InfoIconProps {
@@ -7,6 +7,7 @@ export interface InfoIconProps {
 
 export function InfoIcon({ tooltip }: InfoIconProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => {
     setIsVisible(!isVisible);
@@ -15,6 +16,21 @@ export function InfoIcon({ tooltip }: InfoIconProps) {
   const handleBlur = () => {
     setIsVisible(false);
   };
+
+  useEffect(() => {
+    if (!isVisible || !tooltipRef.current) return;
+    const el = tooltipRef.current;
+    const rect = el.getBoundingClientRect();
+    const margin = 8;
+
+    if (rect.left < margin) {
+      el.style.left = `${margin - rect.left}px`;
+      el.style.transform = 'none';
+    } else if (rect.right > window.innerWidth - margin) {
+      el.style.left = `${window.innerWidth - margin - rect.right}px`;
+      el.style.transform = 'none';
+    }
+  }, [isVisible]);
 
   return (
     <div className="info-icon">
@@ -29,7 +45,7 @@ export function InfoIcon({ tooltip }: InfoIconProps) {
         <span className="info-icon__symbol">i</span>
       </button>
       {isVisible && (
-        <div className="info-icon__tooltip" role="tooltip">
+        <div className="info-icon__tooltip" role="tooltip" ref={tooltipRef}>
           {tooltip}
         </div>
       )}
