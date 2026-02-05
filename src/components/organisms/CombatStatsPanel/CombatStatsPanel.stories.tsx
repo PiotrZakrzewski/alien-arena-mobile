@@ -62,3 +62,11 @@ export const Balanced: Story = {
     agility: 4,
   },
 };
+
+export const ReadOnly: Story = {
+  args: {
+    strength: 3,
+    agility: 4,
+    readOnly: true,
+  },
+};

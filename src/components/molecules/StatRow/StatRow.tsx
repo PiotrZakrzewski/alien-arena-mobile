@@ -7,9 +7,10 @@ export interface StatRowProps {
   label: string;
   tooltip: string;
   value: number;
-  onChange: (value: number) => void;
+  onChange?: (value: number) => void;
   min?: number;
   max?: number;
+  readOnly?: boolean;
 }
 
 export function StatRow({
@@ -19,6 +20,7 @@ export function StatRow({
   onChange,
   min = 1,
   max = 5,
+  readOnly = false,
 }: StatRowProps) {
   return (
     <div className="stat-row">
@@ -32,6 +34,7 @@ export function StatRow({
         min={min}
         max={max}
         label={label}
+        readOnly={readOnly}
       />
     </div>
   );

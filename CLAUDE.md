@@ -15,7 +15,10 @@ src/
 │   ├── organisms/       # Complex UI sections
 │   └── index.ts         # Barrel exports
 ├── data/                # Static game data
-│   └── skillDefinitions.ts  # Skill registry
+│   ├── skillDefinitions.ts   # Skill registry
+│   ├── characterPresets.ts   # Static character templates
+│   ├── characterFactory.ts   # Preset → Character factory
+│   └── index.ts              # Barrel exports
 ├── state/               # Global state management
 │   ├── types.ts         # State & action types
 │   ├── gameReducer.ts   # Reducer logic
@@ -35,21 +38,40 @@ src/
 
 ### Molecules
 - **NavigationChevrons** - Left/right arrows (2x IconButton)
-- **StatEditor** - Plus/minus with value (IconButton + StatValue + IconButton)
-- **StatRow** - Full stat control (InfoIcon + StatLabel + StatEditor)
+- **StatEditor** - Plus/minus with value; supports `readOnly` mode (value only, no buttons)
+- **StatRow** - Full stat control (InfoIcon + StatLabel + StatEditor); supports `readOnly` passthrough
 - **SkillRow** - Skill control with base stat badge (InfoIcon + StatLabel + badge + StatEditor)
 
 ### Organisms
 - **CharacterHeader** - Navigation + name display
-- **CombatStatsPanel** - STR and AGI stat rows
+- **CombatStatsPanel** - STR and AGI stat rows; supports `readOnly` prop
 - **SkillsPanel** - All skill rows from SKILL_DEFINITIONS
 - **PhaseNavigation** - Back/Next buttons for phase transitions
 
 ### Views
-- **CharacterSelector** - Full character selection screen with state management
-- **SkillsEditor** - Skills editing screen for selected character
+- **CharacterSelector** - Browse presets with read-only stats, select copies preset to active character
+- **SkillsEditor** - Stats editing (CombatStatsPanel) + skills editing for selected character
 
 ## Data Layer
+
+### Character Presets (src/data/characterPresets.ts)
+Static, read-only templates. Never mutated at runtime.
+```ts
+interface CharacterPreset {
+  id: string;           // 'ripley'
+  name: string;         // 'RIPLEY'
+  strength: number;
+  agility: number;
+  maxHealth: number;
+  skills: Record<string, number>;
+}
+```
+
+### Character Factory (src/data/characterFactory.ts)
+```ts
+function createCharacterFromPreset(preset: CharacterPreset): Character
+```
+Deep-copies a preset into a full Character with initialized health, empty items/talents.
 
 ### Skill Definitions (src/data/skillDefinitions.ts)
 ```ts
@@ -70,31 +92,49 @@ const SKILL_DEFINITIONS: SkillDefinition[] = [
 
 ## State Management
 
-React Context + useReducer pattern for global game state.
+React Context + useReducer pattern for global game state. State uses direct character slots (not arrays) — designed to be serialized/deserialized directly for persistence.
 
 ### GameState
 ```ts
 {
-  characters: Character[]      // All characters with stats
-  playerCharacterId: string    // Selected player
-  enemyCharacterId: string     // Selected enemy
+  playerCharacter: Character | null   // Active player instance
+  enemyCharacter: Character | null    // Active enemy instance
   phase: 'character-select' | 'skills' | 'items' | 'combat' | 'result'
 }
 ```
 
-### Character
+### Character (mutable instance)
 ```ts
 {
-  id, name, strength, agility, health, maxHealth,
-  skills: Record<string, number>  // { closeCombat: 0, rangedCombat: 2, ... }
+  id: string;              // Unique instance ID
+  presetId: string;        // Links back to template
+  name: string;
+  strength: number;
+  agility: number;
+  health: number;
+  maxHealth: number;
+  skills: Record<string, number>;
+  items: Record<string, number>;    // Ready for Items phase
+  talents: Record<string, number>;  // Ready for Talents phase
 }
 ```
+
+### Actions
+All character-mutating actions take a `role: 'player' | 'enemy'` field.
+
+| Action | Purpose |
+|--------|---------|
+| `SELECT_CHARACTER` | Clone preset → slot |
+| `UPDATE_STAT` | Edit strength/agility on active character |
+| `UPDATE_SKILL` | Edit a skill on active character |
+| `SET_PHASE` | Navigate phases |
+| `RESET_COMBAT` | Restore health, reset phase |
 
 ### Usage
 ```tsx
 import { useGame } from './state'
 
-const { characters, playerCharacter, updateCharacter, updateSkill, setPhase } = useGame()
+const { playerCharacter, selectCharacter, updateStat, updateSkill, setPhase } = useGame()
 ```
 
 ## Navigation Flow
@@ -105,8 +145,9 @@ CharacterSelector → [Select] → SkillsEditor → [Items] → ItemsEditor (fut
 ```
 
 - App.tsx routes based on `phase` state
-- Character selection calls `selectPlayer(id)` + `setPhase('skills')`
-- Back returns to `character-select` (selection persists via `playerCharacterId`)
+- CharacterSelector browses presets (read-only stats), select calls `selectCharacter('player', character)` + `setPhase('skills')`
+- SkillsEditor shows editable stats (CombatStatsPanel) + editable skills (SkillsPanel)
+- Back returns to `character-select`
 
 ## Design System
 

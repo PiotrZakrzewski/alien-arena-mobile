@@ -2,17 +2,18 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { SkillsEditor } from './SkillsEditor';
 import { GameProvider, Character } from '../../state';
 
-const sampleCharacters: Character[] = [
-  {
-    id: '1',
-    name: 'RIPLEY',
-    strength: 3,
-    agility: 4,
-    health: 10,
-    maxHealth: 10,
-    skills: { closeCombat: 2, rangedCombat: 3, mobility: 1, stamina: 2 },
-  },
-];
+const samplePlayer: Character = {
+  id: 'char-story-1',
+  presetId: 'ripley',
+  name: 'RIPLEY',
+  strength: 3,
+  agility: 4,
+  health: 10,
+  maxHealth: 10,
+  skills: { closeCombat: 2, rangedCombat: 3, mobility: 1, stamina: 2 },
+  items: {},
+  talents: {},
+};
 
 const meta = {
   title: 'Views/SkillsEditor',
@@ -25,8 +26,7 @@ const meta = {
     (Story) => (
       <GameProvider
         initialState={{
-          characters: sampleCharacters,
-          playerCharacterId: '1',
+          playerCharacter: samplePlayer,
           phase: 'skills',
         }}
       >
@@ -46,10 +46,7 @@ export const EmptySkills: Story = {
     (Story) => (
       <GameProvider
         initialState={{
-          characters: [
-            { ...sampleCharacters[0], skills: {} },
-          ],
-          playerCharacterId: '1',
+          playerCharacter: { ...samplePlayer, skills: {} },
           phase: 'skills',
         }}
       >

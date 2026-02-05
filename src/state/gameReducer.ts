@@ -1,73 +1,61 @@
-import { GameState, GameAction } from './types';
+import { GameState, GameAction, Character, CharacterRole } from './types';
 
 export const initialGameState: GameState = {
-  characters: [],
-  playerCharacterId: null,
-  enemyCharacterId: null,
+  playerCharacter: null,
+  enemyCharacter: null,
   phase: 'character-select',
 };
 
+function getSlotKey(role: CharacterRole): 'playerCharacter' | 'enemyCharacter' {
+  return role === 'player' ? 'playerCharacter' : 'enemyCharacter';
+}
+
+function updateCharacterSlot(
+  state: GameState,
+  role: CharacterRole,
+  updater: (char: Character) => Character,
+): GameState {
+  const key = getSlotKey(role);
+  const current = state[key];
+  if (!current) return state;
+  return { ...state, [key]: updater(current) };
+}
+
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
-    case 'SET_CHARACTERS':
-      return {
-        ...state,
-        characters: action.payload,
-      };
+    case 'SELECT_CHARACTER': {
+      const key = getSlotKey(action.payload.role);
+      return { ...state, [key]: action.payload.character };
+    }
 
-    case 'SELECT_PLAYER':
-      return {
-        ...state,
-        playerCharacterId: action.payload,
-      };
-
-    case 'SELECT_ENEMY':
-      return {
-        ...state,
-        enemyCharacterId: action.payload,
-      };
-
-    case 'UPDATE_CHARACTER':
-      return {
-        ...state,
-        characters: state.characters.map((char) =>
-          char.id === action.payload.id
-            ? { ...char, ...action.payload.changes }
-            : char
-        ),
-      };
+    case 'UPDATE_STAT':
+      return updateCharacterSlot(state, action.payload.role, (char) => ({
+        ...char,
+        [action.payload.stat]: action.payload.value,
+      }));
 
     case 'UPDATE_SKILL':
-      return {
-        ...state,
-        characters: state.characters.map((char) =>
-          char.id === action.payload.characterId
-            ? {
-                ...char,
-                skills: {
-                  ...char.skills,
-                  [action.payload.skillKey]: action.payload.value,
-                },
-              }
-            : char
-        ),
-      };
+      return updateCharacterSlot(state, action.payload.role, (char) => ({
+        ...char,
+        skills: {
+          ...char.skills,
+          [action.payload.skillKey]: action.payload.value,
+        },
+      }));
 
     case 'SET_PHASE':
-      return {
-        ...state,
-        phase: action.payload,
-      };
+      return { ...state, phase: action.payload };
 
-    case 'RESET_COMBAT':
+    case 'RESET_COMBAT': {
+      const resetHealth = (char: Character | null) =>
+        char ? { ...char, health: char.maxHealth } : null;
       return {
         ...state,
-        characters: state.characters.map((char) => ({
-          ...char,
-          health: char.maxHealth,
-        })),
+        playerCharacter: resetHealth(state.playerCharacter),
+        enemyCharacter: resetHealth(state.enemyCharacter),
         phase: 'character-select',
       };
+    }
 
     default:
       return state;

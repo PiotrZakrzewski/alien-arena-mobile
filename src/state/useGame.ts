@@ -1,6 +1,6 @@
 import { useContext, useCallback } from 'react';
 import { GameContext } from './GameContext';
-import { Character, GamePhase } from './types';
+import { Character, CharacterRole, GamePhase } from './types';
 
 export function useGame() {
   const context = useContext(GameContext);
@@ -11,37 +11,23 @@ export function useGame() {
 
   const { state, dispatch } = context;
 
-  const setCharacters = useCallback(
-    (characters: Character[]) => {
-      dispatch({ type: 'SET_CHARACTERS', payload: characters });
+  const selectCharacter = useCallback(
+    (role: CharacterRole, character: Character) => {
+      dispatch({ type: 'SELECT_CHARACTER', payload: { role, character } });
     },
     [dispatch]
   );
 
-  const selectPlayer = useCallback(
-    (characterId: string) => {
-      dispatch({ type: 'SELECT_PLAYER', payload: characterId });
-    },
-    [dispatch]
-  );
-
-  const selectEnemy = useCallback(
-    (characterId: string) => {
-      dispatch({ type: 'SELECT_ENEMY', payload: characterId });
-    },
-    [dispatch]
-  );
-
-  const updateCharacter = useCallback(
-    (id: string, changes: Partial<Character>) => {
-      dispatch({ type: 'UPDATE_CHARACTER', payload: { id, changes } });
+  const updateStat = useCallback(
+    (role: CharacterRole, stat: 'strength' | 'agility', value: number) => {
+      dispatch({ type: 'UPDATE_STAT', payload: { role, stat, value } });
     },
     [dispatch]
   );
 
   const updateSkill = useCallback(
-    (characterId: string, skillKey: string, value: number) => {
-      dispatch({ type: 'UPDATE_SKILL', payload: { characterId, skillKey, value } });
+    (role: CharacterRole, skillKey: string, value: number) => {
+      dispatch({ type: 'UPDATE_SKILL', payload: { role, skillKey, value } });
     },
     [dispatch]
   );
@@ -57,26 +43,15 @@ export function useGame() {
     dispatch({ type: 'RESET_COMBAT' });
   }, [dispatch]);
 
-  // Derived state
-  const playerCharacter = state.characters.find(
-    (c) => c.id === state.playerCharacterId
-  );
-  const enemyCharacter = state.characters.find(
-    (c) => c.id === state.enemyCharacterId
-  );
-
   return {
     // State
-    characters: state.characters,
-    playerCharacter,
-    enemyCharacter,
+    playerCharacter: state.playerCharacter,
+    enemyCharacter: state.enemyCharacter,
     phase: state.phase,
 
     // Actions
-    setCharacters,
-    selectPlayer,
-    selectEnemy,
-    updateCharacter,
+    selectCharacter,
+    updateStat,
     updateSkill,
     setPhase,
     resetCombat,

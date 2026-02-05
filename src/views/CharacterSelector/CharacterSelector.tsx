@@ -3,15 +3,17 @@ import { CharacterHeader } from '../../components/organisms/CharacterHeader';
 import { CombatStatsPanel } from '../../components/organisms/CombatStatsPanel';
 import { ProgressButton } from '../../components/atoms/ProgressButton';
 import { useGame } from '../../state';
+import { CHARACTER_PRESETS } from '../../data';
+import { createCharacterFromPreset } from '../../data';
 import './CharacterSelector.css';
 
 export function CharacterSelector() {
-  const { characters, updateCharacter, selectPlayer, setPhase } = useGame();
+  const { selectCharacter, setPhase } = useGame();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const currentCharacter = characters[currentIndex];
+  const currentPreset = CHARACTER_PRESETS[currentIndex];
   const hasPrev = currentIndex > 0;
-  const hasNext = currentIndex < characters.length - 1;
+  const hasNext = currentIndex < CHARACTER_PRESETS.length - 1;
 
   const handlePrev = () => {
     if (hasPrev) {
@@ -25,43 +27,31 @@ export function CharacterSelector() {
     }
   };
 
-  const handleStrengthChange = (value: number) => {
-    if (currentCharacter) {
-      updateCharacter(currentCharacter.id, { strength: value });
-    }
-  };
-
-  const handleAgilityChange = (value: number) => {
-    if (currentCharacter) {
-      updateCharacter(currentCharacter.id, { agility: value });
-    }
-  };
-
   const handleProgress = () => {
-    if (currentCharacter) {
-      selectPlayer(currentCharacter.id);
+    if (currentPreset) {
+      const character = createCharacterFromPreset(currentPreset);
+      selectCharacter('player', character);
       setPhase('skills');
     }
   };
 
-  if (!currentCharacter) {
+  if (!currentPreset) {
     return null;
   }
 
   return (
     <div className="character-selector">
       <CharacterHeader
-        name={currentCharacter.name}
+        name={currentPreset.name}
         onPrev={handlePrev}
         onNext={handleNext}
         hasPrev={hasPrev}
         hasNext={hasNext}
       />
       <CombatStatsPanel
-        strength={currentCharacter.strength}
-        agility={currentCharacter.agility}
-        onStrengthChange={handleStrengthChange}
-        onAgilityChange={handleAgilityChange}
+        strength={currentPreset.strength}
+        agility={currentPreset.agility}
+        readOnly
       />
       <div className="character-selector__footer">
         <ProgressButton label="Select" onClick={handleProgress} />
