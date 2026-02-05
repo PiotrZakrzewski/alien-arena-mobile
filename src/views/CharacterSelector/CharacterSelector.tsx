@@ -40,7 +40,7 @@ export function CharacterSelector() {
   const handleProgress = () => {
     if (currentCharacter) {
       selectPlayer(currentCharacter.id);
-      setPhase('combat');
+      setPhase('skills');
     }
   };
 

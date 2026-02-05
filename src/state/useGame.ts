@@ -39,6 +39,13 @@ export function useGame() {
     [dispatch]
   );
 
+  const updateSkill = useCallback(
+    (characterId: string, skillKey: string, value: number) => {
+      dispatch({ type: 'UPDATE_SKILL', payload: { characterId, skillKey, value } });
+    },
+    [dispatch]
+  );
+
   const setPhase = useCallback(
     (phase: GamePhase) => {
       dispatch({ type: 'SET_PHASE', payload: phase });
@@ -70,6 +77,7 @@ export function useGame() {
     selectPlayer,
     selectEnemy,
     updateCharacter,
+    updateSkill,
     setPhase,
     resetCombat,
   };

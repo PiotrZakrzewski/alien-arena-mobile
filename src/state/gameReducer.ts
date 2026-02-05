@@ -37,6 +37,22 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ),
       };
 
+    case 'UPDATE_SKILL':
+      return {
+        ...state,
+        characters: state.characters.map((char) =>
+          char.id === action.payload.characterId
+            ? {
+                ...char,
+                skills: {
+                  ...char.skills,
+                  [action.payload.skillKey]: action.payload.value,
+                },
+              }
+            : char
+        ),
+      };
+
     case 'SET_PHASE':
       return {
         ...state,
