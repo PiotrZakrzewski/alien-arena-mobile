@@ -9,6 +9,17 @@
   background-color: var(--color-bg);
 }
 
+.character-selector__description {
+  font-family: var(--font-terminal);
+  font-size: var(--text-base);
+  color: var(--color-primary-dim);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 320px;
+  padding: var(--space-lg) var(--space-md);
+  margin: 0;
+}
+
 .character-selector__footer {
   display: flex;
   justify-content: center;

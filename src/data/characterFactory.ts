@@ -8,6 +8,7 @@ export function createCharacterFromPreset(preset: CharacterPreset): Character {
     id: `char-${nextId++}`,
     presetId: preset.id,
     name: preset.name,
+    description: preset.description,
     strength: preset.strength,
     agility: preset.agility,
     health: preset.maxHealth,

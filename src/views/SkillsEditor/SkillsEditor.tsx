@@ -1,31 +1,22 @@
 import { NameDisplay } from '../../components/atoms/NameDisplay';
-import { CombatStatsPanel } from '../../components/organisms/CombatStatsPanel';
 import { SkillsPanel } from '../../components/organisms/SkillsPanel';
 import { PhaseNavigation } from '../../components/organisms/PhaseNavigation';
 import { useGame } from '../../state';
 import './SkillsEditor.css';
 
 export function SkillsEditor() {
-  const { playerCharacter, updateStat, updateSkill, setPhase } = useGame();
+  const { playerCharacter, updateSkill, setPhase } = useGame();
 
   if (!playerCharacter) {
     return null;
   }
-
-  const handleStrengthChange = (value: number) => {
-    updateStat('player', 'strength', value);
-  };
-
-  const handleAgilityChange = (value: number) => {
-    updateStat('player', 'agility', value);
-  };
 
   const handleSkillChange = (skillKey: string, value: number) => {
     updateSkill('player', skillKey, value);
   };
 
   const handleBack = () => {
-    setPhase('character-select');
+    setPhase('stats');
   };
 
   const handleNext = () => {
@@ -38,12 +29,6 @@ export function SkillsEditor() {
         <NameDisplay name={playerCharacter.name} />
         <span className="skills-editor__subtitle">SKILLS</span>
       </header>
-      <CombatStatsPanel
-        strength={playerCharacter.strength}
-        agility={playerCharacter.agility}
-        onStrengthChange={handleStrengthChange}
-        onAgilityChange={handleAgilityChange}
-      />
       <SkillsPanel
         skills={playerCharacter.skills}
         onSkillChange={handleSkillChange}
@@ -51,7 +36,7 @@ export function SkillsEditor() {
       <div className="skills-editor__footer">
         <PhaseNavigation
           onBack={handleBack}
-          backLabel="Back"
+          backLabel="Stats"
           onNext={handleNext}
           nextLabel="Items"
         />

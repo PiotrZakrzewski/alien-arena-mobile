@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { SkillsEditor } from './SkillsEditor';
+import { StatsEditor } from './StatsEditor';
 import { GameProvider, Character } from '../../state';
 
 const samplePlayer: Character = {
@@ -11,14 +11,14 @@ const samplePlayer: Character = {
   agility: 4,
   health: 10,
   maxHealth: 10,
-  skills: { closeCombat: 2, rangedCombat: 3, mobility: 1, stamina: 2 },
+  skills: {},
   items: {},
   talents: {},
 };
 
 const meta = {
-  title: 'Views/SkillsEditor',
-  component: SkillsEditor,
+  title: 'Views/StatsEditor',
+  component: StatsEditor,
   parameters: {
     layout: 'fullscreen',
   },
@@ -28,31 +28,16 @@ const meta = {
       <GameProvider
         initialState={{
           playerCharacter: samplePlayer,
-          phase: 'skills',
+          phase: 'stats',
         }}
       >
         <Story />
       </GameProvider>
     ),
   ],
-} satisfies Meta<typeof SkillsEditor>;
+} satisfies Meta<typeof StatsEditor>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-
-export const EmptySkills: Story = {
-  decorators: [
-    (Story) => (
-      <GameProvider
-        initialState={{
-          playerCharacter: { ...samplePlayer, skills: {} },
-          phase: 'skills',
-        }}
-      >
-        <Story />
-      </GameProvider>
-    ),
-  ],
-};

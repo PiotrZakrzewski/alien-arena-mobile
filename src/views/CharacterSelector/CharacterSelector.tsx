@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { CharacterHeader } from '../../components/organisms/CharacterHeader';
-import { CombatStatsPanel } from '../../components/organisms/CombatStatsPanel';
 import { ProgressButton } from '../../components/atoms/ProgressButton';
 import { useGame } from '../../state';
-import { CHARACTER_PRESETS } from '../../data';
-import { createCharacterFromPreset } from '../../data';
+import { CHARACTER_PRESETS, createCharacterFromPreset } from '../../data';
 import './CharacterSelector.css';
 
 export function CharacterSelector() {
@@ -31,7 +29,7 @@ export function CharacterSelector() {
     if (currentPreset) {
       const character = createCharacterFromPreset(currentPreset);
       selectCharacter('player', character);
-      setPhase('skills');
+      setPhase('stats');
     }
   };
 
@@ -48,11 +46,9 @@ export function CharacterSelector() {
         hasPrev={hasPrev}
         hasNext={hasNext}
       />
-      <CombatStatsPanel
-        strength={currentPreset.strength}
-        agility={currentPreset.agility}
-        readOnly
-      />
+      <p className="character-selector__description">
+        {currentPreset.description}
+      </p>
       <div className="character-selector__footer">
         <ProgressButton label="Select" onClick={handleProgress} />
       </div>

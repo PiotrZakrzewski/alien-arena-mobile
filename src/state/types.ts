@@ -2,6 +2,7 @@ export interface Character {
   id: string;
   presetId: string;
   name: string;
+  description: string;
   strength: number;
   agility: number;
   health: number;
@@ -13,7 +14,7 @@ export interface Character {
 
 export type CharacterRole = 'player' | 'enemy';
 
-export type GamePhase = 'character-select' | 'skills' | 'items' | 'combat' | 'result';
+export type GamePhase = 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat' | 'result';
 
 export interface GameState {
   playerCharacter: Character | null;

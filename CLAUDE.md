@@ -49,8 +49,9 @@ src/
 - **PhaseNavigation** - Back/Next buttons for phase transitions
 
 ### Views
-- **CharacterSelector** - Browse presets with read-only stats, select copies preset to active character
-- **SkillsEditor** - Stats editing (CombatStatsPanel) + skills editing for selected character
+- **CharacterSelector** - Browse presets with description text, select copies preset to active character
+- **StatsEditor** - Editable STR/AGI stats for selected character
+- **SkillsEditor** - Editable skills for selected character
 
 ## Data Layer
 
@@ -60,6 +61,7 @@ Static, read-only templates. Never mutated at runtime.
 interface CharacterPreset {
   id: string;           // 'ripley'
   name: string;         // 'RIPLEY'
+  description: string;  // Short flavor text for preset browsing
   strength: number;
   agility: number;
   maxHealth: number;
@@ -99,7 +101,7 @@ React Context + useReducer pattern for global game state. State uses direct char
 {
   playerCharacter: Character | null   // Active player instance
   enemyCharacter: Character | null    // Active enemy instance
-  phase: 'character-select' | 'skills' | 'items' | 'combat' | 'result'
+  phase: 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat' | 'result'
 }
 ```
 
@@ -109,6 +111,7 @@ React Context + useReducer pattern for global game state. State uses direct char
   id: string;              // Unique instance ID
   presetId: string;        // Links back to template
   name: string;
+  description: string;     // Copied from preset
   strength: number;
   agility: number;
   health: number;
@@ -140,14 +143,15 @@ const { playerCharacter, selectCharacter, updateStat, updateSkill, setPhase } = 
 ## Navigation Flow
 
 ```
-CharacterSelector → [Select] → SkillsEditor → [Items] → ItemsEditor (future)
-                              ← [Back] ←
+CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor (future) → TalentsEditor (future) → Combat
+                              ← [Back] ←    ← [Stats] ←              ← ...
 ```
 
 - App.tsx routes based on `phase` state
-- CharacterSelector browses presets (read-only stats), select calls `selectCharacter('player', character)` + `setPhase('skills')`
-- SkillsEditor shows editable stats (CombatStatsPanel) + editable skills (SkillsPanel)
-- Back returns to `character-select`
+- Each phase has its own dedicated view — one concern per screen (mobile-first)
+- CharacterSelector browses presets (description text), select creates Character and navigates to stats
+- StatsEditor edits STR/AGI, SkillsEditor edits skills — each view is standalone
+- Back navigates to previous phase, Next to following phase
 
 ## Design System
 
