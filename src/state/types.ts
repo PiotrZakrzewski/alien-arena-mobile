@@ -33,11 +33,19 @@ export interface Character {
 
 export type CharacterRole = 'player' | 'enemy';
 
-export type GamePhase = 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat' | 'result';
+export type CombatType = 'normal' | 'surprise' | 'ambush';
+
+export interface CombatSetup {
+  combatType: CombatType;
+  advantageSide: CharacterRole | null;
+}
+
+export type GamePhase = 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat-setup' | 'initiative' | 'combat' | 'result';
 
 export interface GameState {
   playerCharacter: Character | null;
   enemyCharacter: Character | null;
+  combatSetup: CombatSetup;
   phase: GamePhase;
 }
 
@@ -48,5 +56,6 @@ export type GameAction =
   | { type: 'SET_WEAPON'; payload: { role: CharacterRole; weapon: Weapon } }
   | { type: 'SET_ARMOR'; payload: { role: CharacterRole; armor: Armor } }
   | { type: 'UPDATE_TALENT'; payload: { role: CharacterRole; talentKey: string; value: number } }
+  | { type: 'SET_COMBAT_SETUP'; payload: CombatSetup }
   | { type: 'SET_PHASE'; payload: GamePhase }
   | { type: 'RESET_COMBAT' };

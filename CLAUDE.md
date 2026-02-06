@@ -38,6 +38,7 @@ src/
 - **StatLabel** - Text label for a stat ("STR", "AGI")
 - **StatValue** - Displays numeric value (0-5)
 - **Die** - Single d6 die face, normal (green) or stress (amber) variant, success highlight, rolling animation
+- **InitiativeCard** - Single initiative card (1-10), player (green) or enemy (red) variant, winner highlight, drawing animation
 
 ### Molecules
 - **NavigationChevrons** - Left/right arrows (2x IconButton)
@@ -53,6 +54,7 @@ src/
 - **SkillsPanel** - All skill rows from SKILL_DEFINITIONS
 - **PhaseNavigation** - Back/Next buttons for phase transitions
 - **DiceRollResult** - Full dice roll panel: breakdown, pool, success count, push mechanics, context text
+- **InitiativeResult** - Initiative comparison: two cards side-by-side with names, VS separator, winner text, continue button
 
 ### Views
 - **CharacterSelector** - Browse presets with description text, select copies preset to active character
@@ -60,6 +62,8 @@ src/
 - **SkillsEditor** - Editable skills for selected character
 - **ItemsEditor** - Weapon type/stats and armor rating editor
 - **TalentsEditor** - Career-filtered talent picker with stackable talents
+- **CombatSetupView** - Combat type selector (normal/surprise/ambush) with advantage side picker
+- **InitiativeView** - Draws initiative cards based on combat setup; surprise/ambush gives card #1 to advantaged side
 
 ## Data Layer
 
@@ -124,12 +128,23 @@ Stackable talents (seenItAll, weaponSpecialist) allow values up to maxStacks (3)
 
 React Context + useReducer pattern for global game state. State uses direct character slots (not arrays) — designed to be serialized/deserialized directly for persistence.
 
+### Combat Setup Types
+```ts
+type CombatType = 'normal' | 'surprise' | 'ambush';
+
+interface CombatSetup {
+  combatType: CombatType;
+  advantageSide: CharacterRole | null;  // who surprises/ambushes; null for normal
+}
+```
+
 ### GameState
 ```ts
 {
   playerCharacter: Character | null   // Active player instance
   enemyCharacter: Character | null    // Active enemy instance
-  phase: 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat' | 'result'
+  combatSetup: CombatSetup            // Combat type and advantage side
+  phase: 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat-setup' | 'initiative' | 'combat' | 'result'
 }
 ```
 
@@ -185,6 +200,7 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 | `SET_WEAPON` | Replace weapon on active character |
 | `SET_ARMOR` | Replace armor on active character |
 | `UPDATE_TALENT` | Edit a talent stack on active character |
+| `SET_COMBAT_SETUP` | Set combat type and advantage side |
 | `SET_PHASE` | Navigate phases |
 | `RESET_COMBAT` | Restore health, reset phase |
 
@@ -192,14 +208,14 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 ```tsx
 import { useGame } from './state'
 
-const { playerCharacter, selectCharacter, updateStat, updateSkill, updateTalent, setWeapon, setArmor, setPhase } = useGame()
+const { playerCharacter, combatSetup, selectCharacter, updateStat, updateSkill, updateTalent, setWeapon, setArmor, setCombatSetup, setPhase } = useGame()
 ```
 
 ## Navigation Flow
 
 ```
-CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor → [Combat] → Combat
-                              ← [Back] ←    ← [Stats] ←              ← [Skills] ←          ← [Items] ←
+CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor → [Setup] → CombatSetupView → [Fight!] → InitiativeView → [Continue] → Combat
+                              ← [Back] ←    ← [Stats] ←              ← [Skills] ←          ← [Items] ←                          ← [Talents] ←
 ```
 
 - App.tsx routes based on `phase` state

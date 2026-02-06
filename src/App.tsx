@@ -1,6 +1,6 @@
 import './App.css'
 import { GameProvider, useGame } from './state'
-import { CharacterSelector, StatsEditor, SkillsEditor, ItemsEditor, TalentsEditor } from './views'
+import { CharacterSelector, StatsEditor, SkillsEditor, ItemsEditor, TalentsEditor, CombatSetupView, InitiativeView } from './views'
 
 function PhaseRouter() {
   const { phase } = useGame()
@@ -16,6 +16,10 @@ function PhaseRouter() {
       return <ItemsEditor />
     case 'talents':
       return <TalentsEditor />
+    case 'combat-setup':
+      return <CombatSetupView />
+    case 'initiative':
+      return <InitiativeView />
     case 'combat':
     case 'result':
     default:

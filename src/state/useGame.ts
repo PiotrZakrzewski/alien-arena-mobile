@@ -1,6 +1,6 @@
 import { useContext, useCallback } from 'react';
 import { GameContext } from './GameContext';
-import { Character, CharacterRole, GamePhase, Weapon, Armor } from './types';
+import { Character, CharacterRole, GamePhase, Weapon, Armor, CombatSetup } from './types';
 
 export function useGame() {
   const context = useContext(GameContext);
@@ -53,6 +53,13 @@ export function useGame() {
     [dispatch]
   );
 
+  const setCombatSetup = useCallback(
+    (setup: CombatSetup) => {
+      dispatch({ type: 'SET_COMBAT_SETUP', payload: setup });
+    },
+    [dispatch]
+  );
+
   const setPhase = useCallback(
     (phase: GamePhase) => {
       dispatch({ type: 'SET_PHASE', payload: phase });
@@ -68,6 +75,7 @@ export function useGame() {
     // State
     playerCharacter: state.playerCharacter,
     enemyCharacter: state.enemyCharacter,
+    combatSetup: state.combatSetup,
     phase: state.phase,
 
     // Actions
@@ -77,6 +85,7 @@ export function useGame() {
     updateTalent,
     setWeapon,
     setArmor,
+    setCombatSetup,
     setPhase,
     resetCombat,
   };

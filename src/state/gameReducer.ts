@@ -2,7 +2,22 @@ import { GameState, GameAction, Character, CharacterRole } from './types';
 
 export const initialGameState: GameState = {
   playerCharacter: null,
-  enemyCharacter: null,
+  combatSetup: { combatType: 'normal', advantageSide: null },
+  enemyCharacter: {
+    id: 'enemy-1',
+    presetId: 'roughneck',
+    name: 'ENEMY',
+    description: 'Blue-collar spacer built like a bulldozer. Takes a beating and keeps going.',
+    career: 'roughneck',
+    strength: 5,
+    agility: 2,
+    health: 11,
+    maxHealth: 11,
+    skills: { closeCombat: 3, stamina: 2 },
+    weapon: { type: 'close', modifier: 1, damage: 2, minRange: 'adjacent', maxRange: 'adjacent', armorPiercing: false },
+    armor: { rating: 1 },
+    talents: {},
+  },
   phase: 'character-select',
 };
 
@@ -63,6 +78,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...char,
         armor: action.payload.armor,
       }));
+
+    case 'SET_COMBAT_SETUP':
+      return { ...state, combatSetup: action.payload };
 
     case 'SET_PHASE':
       return { ...state, phase: action.payload };

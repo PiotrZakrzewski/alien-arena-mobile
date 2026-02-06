@@ -25,7 +25,7 @@ export function TalentsEditor() {
   };
 
   const handleNext = () => {
-    setPhase('combat');
+    setPhase('combat-setup');
   };
 
   return (
@@ -52,7 +52,7 @@ export function TalentsEditor() {
           onBack={handleBack}
           backLabel="Items"
           onNext={handleNext}
-          nextLabel="Combat"
+          nextLabel="Setup"
         />
       </div>
     </div>
