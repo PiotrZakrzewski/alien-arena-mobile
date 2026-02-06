@@ -1,0 +1,14 @@
+.dice-pool {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+@media (min-width: 480px) {
+  .dice-pool {
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+  }
+}

@@ -1,0 +1,120 @@
+.dice-roll-result {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.dice-roll-result__title {
+  text-align: center;
+  font-family: var(--font-terminal);
+  font-size: var(--text-lg);
+  color: var(--color-primary-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: var(--space-md) var(--space-md) var(--space-sm);
+}
+
+.dice-roll-result__outcome {
+  text-align: center;
+  padding: var(--space-md);
+}
+
+.dice-roll-result__count {
+  font-family: var(--font-terminal);
+  font-size: var(--text-xl);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-sm);
+}
+
+.dice-roll-result__count--success {
+  color: var(--color-primary-bright);
+}
+
+.dice-roll-result__count--failure {
+  color: var(--color-danger);
+}
+
+.dice-roll-result__context {
+  font-family: var(--font-terminal);
+  font-size: var(--text-sm);
+  color: var(--color-primary-dim);
+  line-height: 1.4;
+}
+
+.dice-roll-result__push {
+  text-align: center;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.dice-roll-result__push-button {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-lg);
+  border: 2px solid var(--color-warning);
+  border-radius: 4px;
+  background-color: transparent;
+  font-family: var(--font-terminal);
+  font-size: var(--text-base);
+  color: var(--color-warning);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.dice-roll-result__push-button:hover {
+  background-color: var(--color-warning);
+  color: var(--color-bg);
+}
+
+.dice-roll-result__push-blocked {
+  font-family: var(--font-terminal);
+  font-size: var(--text-sm);
+  color: var(--color-primary-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dice-roll-result__continue {
+  text-align: center;
+  padding: var(--space-md);
+}
+
+.dice-roll-result__continue-button {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-xl);
+  border: 2px solid var(--color-primary);
+  border-radius: 4px;
+  background-color: transparent;
+  font-family: var(--font-terminal);
+  font-size: var(--text-base);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.dice-roll-result__continue-button:hover {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+@media (min-width: 480px) {
+  .dice-roll-result__title {
+    font-size: var(--text-xl);
+  }
+
+  .dice-roll-result__count {
+    font-size: var(--text-2xl);
+  }
+
+  .dice-roll-result__context {
+    font-size: var(--text-base);
+  }
+
+  .dice-roll-result__push-button,
+  .dice-roll-result__continue-button {
+    font-size: var(--text-lg);
+  }
+}

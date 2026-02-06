@@ -3,7 +3,7 @@ keep CLAUDE.md up to date, esp any global choices like architecture, patterns, r
 
 Mobile web application simulating combat in Alien RPG Evolved Edition. Built step by step using modular blocks in Storybook.
 
-## Current Deliverable: Talents Editor
+## Current Deliverable: Combat Dice Rolling
 
 ### Component Architecture (Atomic Design)
 
@@ -37,18 +37,22 @@ src/
 - **ProgressButton** - CTA button to proceed
 - **StatLabel** - Text label for a stat ("STR", "AGI")
 - **StatValue** - Displays numeric value (0-5)
+- **Die** - Single d6 die face, normal (green) or stress (amber) variant, success highlight, rolling animation
 
 ### Molecules
 - **NavigationChevrons** - Left/right arrows (2x IconButton)
 - **StatEditor** - Plus/minus with value; supports `readOnly` mode (value only, no buttons)
 - **StatRow** - Full stat control (InfoIcon + StatLabel + StatEditor); supports `readOnly` passthrough
 - **SkillRow** - Skill control with base stat badge (InfoIcon + StatLabel + badge + StatEditor)
+- **DiceBreakdown** - Shows dice pool sources with positive/negative modifiers and base+stress totals
+- **DicePool** - Sorted grid of Die atoms with rolling animation; successes first, normal before stress
 
 ### Organisms
 - **CharacterHeader** - Navigation + name display
 - **CombatStatsPanel** - STR and AGI stat rows; supports `readOnly` prop
 - **SkillsPanel** - All skill rows from SKILL_DEFINITIONS
 - **PhaseNavigation** - Back/Next buttons for phase transitions
+- **DiceRollResult** - Full dice roll panel: breakdown, pool, success count, push mechanics, context text
 
 ### Views
 - **CharacterSelector** - Browse presets with description text, select copies preset to active character

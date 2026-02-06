@@ -1,0 +1,58 @@
+.die {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid;
+  border-radius: 4px;
+  background-color: transparent;
+  font-family: var(--font-terminal);
+  font-size: var(--text-xl);
+  text-align: center;
+  user-select: none;
+}
+
+/* Normal variant (green) */
+.die--normal {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Stress variant (amber) */
+.die--stress {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+/* Success highlight — filled background */
+.die--success.die--normal {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.die--success.die--stress {
+  background-color: var(--color-warning);
+  color: var(--color-bg);
+}
+
+/* Rolling animation */
+.die--rolling {
+  opacity: 0.7;
+}
+
+@media (min-width: 480px) {
+  .die {
+    width: 56px;
+    height: 56px;
+    font-size: var(--text-2xl);
+  }
+}
+
+@media (min-width: 768px) {
+  .die {
+    width: 64px;
+    height: 64px;
+    font-size: var(--text-3xl);
+  }
+}
