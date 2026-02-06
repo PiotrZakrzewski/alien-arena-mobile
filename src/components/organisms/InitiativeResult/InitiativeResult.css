@@ -1,0 +1,123 @@
+.initiative-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.initiative-result__title {
+  text-align: center;
+  font-family: var(--font-terminal);
+  font-size: var(--text-lg);
+  color: var(--color-primary-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: var(--space-md) var(--space-md) var(--space-sm);
+}
+
+.initiative-result__cards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-md);
+}
+
+.initiative-result__side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.initiative-result__name {
+  font-family: var(--font-terminal);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.initiative-result__name--player {
+  color: var(--color-primary);
+}
+
+.initiative-result__name--enemy {
+  color: var(--color-danger);
+}
+
+.initiative-result__vs {
+  font-family: var(--font-terminal);
+  font-size: var(--text-lg);
+  color: var(--color-primary-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding-top: var(--space-lg);
+}
+
+.initiative-result__outcome {
+  text-align: center;
+  padding: var(--space-md);
+}
+
+.initiative-result__winner {
+  font-family: var(--font-terminal);
+  font-size: var(--text-xl);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.initiative-result__winner--player {
+  color: var(--color-primary-bright);
+}
+
+.initiative-result__winner--enemy {
+  color: var(--color-danger);
+}
+
+.initiative-result__continue {
+  text-align: center;
+  padding: var(--space-md);
+}
+
+.initiative-result__continue-button {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-xl);
+  border: 2px solid var(--color-primary);
+  border-radius: 4px;
+  background-color: transparent;
+  font-family: var(--font-terminal);
+  font-size: var(--text-base);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.initiative-result__continue-button:hover {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+@media (min-width: 480px) {
+  .initiative-result__title {
+    font-size: var(--text-xl);
+  }
+
+  .initiative-result__name {
+    font-size: var(--text-base);
+  }
+
+  .initiative-result__vs {
+    font-size: var(--text-xl);
+  }
+
+  .initiative-result__winner {
+    font-size: var(--text-2xl);
+  }
+
+  .initiative-result__continue-button {
+    font-size: var(--text-lg);
+  }
+}

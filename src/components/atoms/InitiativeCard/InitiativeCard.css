@@ -1,0 +1,58 @@
+.initiative-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 80px;
+  border: 2px solid;
+  border-radius: 4px;
+  background-color: transparent;
+  font-family: var(--font-terminal);
+  font-size: var(--text-2xl);
+  text-align: center;
+  user-select: none;
+}
+
+/* Player variant (green) */
+.initiative-card--player {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Enemy variant (red) */
+.initiative-card--enemy {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+/* Winner highlight — filled background */
+.initiative-card--winner.initiative-card--player {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.initiative-card--winner.initiative-card--enemy {
+  background-color: var(--color-danger);
+  color: var(--color-bg);
+}
+
+/* Drawing animation */
+.initiative-card--drawing {
+  opacity: 0.7;
+}
+
+@media (min-width: 480px) {
+  .initiative-card {
+    width: 70px;
+    height: 100px;
+    font-size: var(--text-3xl);
+  }
+}
+
+@media (min-width: 768px) {
+  .initiative-card {
+    width: 80px;
+    height: 120px;
+    font-size: var(--text-3xl);
+  }
+}
