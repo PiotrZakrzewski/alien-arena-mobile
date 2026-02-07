@@ -9,30 +9,12 @@ export interface CombatActionDefinition {
 
 export const ZONE_MAP_PRESETS: ZoneMap[] = [
   {
-    id: 'station-deck-a',
-    name: 'STATION DECK A',
+    id: 'default',
+    name: 'COMBAT ZONE',
     zones: [
-      { id: 'zone-0', name: 'CARGO BAY', cluttered: true },
-      { id: 'zone-1', name: 'CORRIDOR', cluttered: false },
-      { id: 'zone-2', name: 'COMMAND CENTER', cluttered: true },
-    ],
-  },
-  {
-    id: 'colony-perimeter',
-    name: 'COLONY PERIMETER',
-    zones: [
-      { id: 'zone-0', name: 'WATCHTOWER', cluttered: false },
-      { id: 'zone-1', name: 'COURTYARD', cluttered: false },
-      { id: 'zone-2', name: 'BARRICADE', cluttered: true },
-    ],
-  },
-  {
-    id: 'ship-interior',
-    name: 'SHIP INTERIOR',
-    zones: [
-      { id: 'zone-0', name: 'ENGINE ROOM', cluttered: true },
-      { id: 'zone-1', name: 'MESS HALL', cluttered: true },
-      { id: 'zone-2', name: 'BRIDGE', cluttered: false },
+      { id: 'zone-0', name: 'ZONE 1', cluttered: true },
+      { id: 'zone-1', name: 'ZONE 2', cluttered: false },
+      { id: 'zone-2', name: 'ZONE 3', cluttered: true },
     ],
   },
 ];
