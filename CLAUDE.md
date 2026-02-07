@@ -53,6 +53,7 @@ src/
 - **ZoneCell** - Rectangular zone cell with name, clutter indicator, character markers
 - **StatusBar** - Compact health/stress/cover/broken status line
 - **ActionButton** - Terminal button with [Q]/[F] speed tag
+- **CombatOverlay** - Full-screen fixed overlay (position: fixed, inset: 0, z-index: 100) for combat sub-phases. Opaque background, centered content, optional `onTap` for tap-to-dismiss (fires on background only, not child content)
 
 ### Molecules
 - **NavigationChevrons** - Left/right arrows (2x IconButton)
@@ -83,7 +84,7 @@ src/
 - **TalentsEditor** - Career-filtered talent picker with stackable talents
 - **CombatSetupView** - Combat type selector (normal/surprise/ambush) with advantage side picker
 - **InitiativeView** - Draws initiative cards based on combat setup; surprise/ambush gives card #1 to advantaged side
-- **CombatView** - Turn-based combat with zone map, action selection, dice rolling, AI auto-play
+- **CombatView** - Turn-based combat with zone map, action selection, dice rolling, AI auto-play. Uses CombatOverlay for full-screen sub-phases (turn-announce, dice-roll, effect); ActionSelect stays inline with HUD visible
 - **ResultView** - Victory/defeat screen with final stats and play again button
 
 ## Data Layer

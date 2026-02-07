@@ -6,6 +6,7 @@ import { TurnAnnounce } from '../../components/organisms/TurnAnnounce';
 import { ActionSelect } from '../../components/organisms/ActionSelect';
 import { DiceRollResult } from '../../components/organisms/DiceRollResult';
 import { EffectSummary } from '../../components/organisms/EffectSummary';
+import { CombatOverlay } from '../../components/atoms/CombatOverlay';
 import { DebugDicePanel } from '../../components/atoms/DebugDicePanel';
 import './CombatView.css';
 
@@ -64,15 +65,6 @@ export function CombatView() {
       </div>
 
       <div className="combat-view__content">
-        {turn.subPhase === 'turn-announce' && (
-          <TurnAnnounce
-            characterName={turn.currentCharacter?.name ?? ''}
-            round={turn.round}
-            isPlayer={turn.isPlayerTurn}
-            onContinue={turn.startTurn}
-          />
-        )}
-
         {turn.subPhase === 'action-select' && turn.isPlayerTurn && (
           <ActionSelect
             actionsRemaining={turn.effectiveActionsRemaining}
@@ -90,8 +82,21 @@ export function CombatView() {
             </p>
           </div>
         )}
+      </div>
 
-        {turn.subPhase === 'dice-roll' && turn.diceRollData && (
+      {turn.subPhase === 'turn-announce' && (
+        <CombatOverlay onTap={turn.startTurn}>
+          <TurnAnnounce
+            characterName={turn.currentCharacter?.name ?? ''}
+            round={turn.round}
+            isPlayer={turn.isPlayerTurn}
+            onContinue={turn.startTurn}
+          />
+        </CombatOverlay>
+      )}
+
+      {turn.subPhase === 'dice-roll' && turn.diceRollData && (
+        <CombatOverlay>
           <DiceRollResult
             title={turn.diceRollData.title}
             sources={turn.diceRollData.sources}
@@ -105,15 +110,17 @@ export function CombatView() {
             animate={true}
             onContinue={turn.onDiceRollContinue}
           />
-        )}
+        </CombatOverlay>
+      )}
 
-        {turn.subPhase === 'effect' && (
+      {turn.subPhase === 'effect' && (
+        <CombatOverlay onTap={turn.onEffectContinue}>
           <EffectSummary
             lines={turn.effectLines}
             onContinue={turn.onEffectContinue}
           />
-        )}
-      </div>
+        </CombatOverlay>
+      )}
 
       {import.meta.env.DEV && <DebugDicePanel />}
     </div>

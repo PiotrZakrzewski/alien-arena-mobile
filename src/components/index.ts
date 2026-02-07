@@ -10,6 +10,7 @@ export * from './atoms/InitiativeCard';
 export * from './atoms/ZoneCell';
 export * from './atoms/StatusBar';
 export * from './atoms/ActionButton';
+export * from './atoms/CombatOverlay';
 
 // Molecules
 export * from './molecules/NavigationChevrons';

@@ -4,11 +4,9 @@
   align-items: center;
   gap: 32px;
   width: 100%;
-  max-width: 600px;
   padding: 32px 20px;
   background-color: var(--color-bg);
   font-family: var(--font-terminal);
-  min-height: 400px;
 }
 
 .effect-summary__lines {
@@ -91,8 +89,6 @@
   .effect-summary {
     gap: 40px;
     padding: 40px 30px;
-    max-width: 700px;
-    min-height: 500px;
   }
 
   .effect-summary__lines {
@@ -113,8 +109,6 @@
   .effect-summary {
     gap: 48px;
     padding: 48px 40px;
-    max-width: 800px;
-    min-height: 600px;
   }
 
   .effect-summary__lines {
