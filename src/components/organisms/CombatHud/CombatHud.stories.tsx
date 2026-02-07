@@ -21,9 +21,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const mockZones = [
-  { id: 'zone-0', name: 'CARGO BAY', cluttered: true },
-  { id: 'zone-1', name: 'CORRIDOR', cluttered: false },
-  { id: 'zone-2', name: 'COMMAND CENTER', cluttered: true },
+  { id: 'zone-0', name: 'ZONE 1', cluttered: true },
+  { id: 'zone-1', name: 'ZONE 2', cluttered: false },
+  { id: 'zone-2', name: 'ZONE 3', cluttered: true },
 ];
 
 export const RoundOne: Story = {
@@ -50,6 +50,8 @@ export const RoundOne: Story = {
     zones: mockZones,
     playerZoneIndex: 0,
     enemyZoneIndex: 2,
+    mapExpanded: true,
+    onToggleMap: () => {},
   },
 };
 
@@ -77,5 +79,7 @@ export const MidCombat: Story = {
     zones: mockZones,
     playerZoneIndex: 1,
     enemyZoneIndex: 1,
+    mapExpanded: true,
+    onToggleMap: () => {},
   },
 };

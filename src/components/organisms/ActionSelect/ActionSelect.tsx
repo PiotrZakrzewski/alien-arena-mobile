@@ -10,6 +10,7 @@ export interface ActionSelectProps {
   legalActions: LegalAction[];
   onSelectAction: (type: CombatActionType, moveToZone?: number) => void;
   onPass: () => void;
+  onMoveSelecting?: (selecting: boolean) => void;
 }
 
 export function ActionSelect({
@@ -17,6 +18,7 @@ export function ActionSelect({
   legalActions,
   onSelectAction,
   onPass,
+  onMoveSelecting,
 }: ActionSelectProps) {
   const [selectedMove, setSelectedMove] = useState<CombatActionType | null>(null);
 
@@ -24,6 +26,7 @@ export function ActionSelect({
     if (action.type === 'move' && action.moveOptions && action.moveOptions.length > 0) {
       // Show move zone selection
       setSelectedMove('move');
+      onMoveSelecting?.(true);
     } else {
       // Execute action directly
       onSelectAction(action.type);
@@ -35,11 +38,13 @@ export function ActionSelect({
     if (selectedMove === 'move') {
       onSelectAction('move', zoneIndex);
       setSelectedMove(null);
+      onMoveSelecting?.(false);
     }
   };
 
   const handleBackFromZoneSelect = () => {
     setSelectedMove(null);
+    onMoveSelecting?.(false);
   };
 
   // If move is selected, show zone selection
@@ -55,8 +60,8 @@ export function ActionSelect({
           {moveAction.moveOptions.map((zoneIndex) => (
             <ActionButton
               key={zoneIndex}
-              label={`ZONE ${zoneIndex}`}
-              description={`Move to zone ${zoneIndex}`}
+              label={`ZONE ${zoneIndex + 1}`}
+              description={`Move to zone ${zoneIndex + 1}`}
               speed="quick"
               onClick={() => handleZoneSelect(zoneIndex)}
             />

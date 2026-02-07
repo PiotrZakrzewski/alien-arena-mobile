@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { useGame } from '../../state';
 import { useCombatTurn } from '../../combat/useCombatTurn';
 import { CombatHud } from '../../components/organisms/CombatHud';
@@ -11,6 +12,16 @@ import './CombatView.css';
 export function CombatView() {
   const { combatState, playerCharacter, enemyCharacter } = useGame();
   const turn = useCombatTurn();
+  const [mapManuallyToggled, setMapManuallyToggled] = useState(false);
+  const [moveSelectingMap, setMoveSelectingMap] = useState(false);
+
+  const mapExpanded = moveSelectingMap || mapManuallyToggled;
+
+  const handleMoveSelecting = useCallback((selecting: boolean) => {
+    setMoveSelectingMap(selecting);
+    // Reset manual toggle so map auto-collapses when move ends
+    if (selecting) setMapManuallyToggled(false);
+  }, []);
 
   if (!combatState || !playerCharacter || !enemyCharacter) {
     return null;
@@ -44,6 +55,8 @@ export function CombatView() {
           enemyZoneIndex={combatState.enemyZoneIndex}
           highlightedZones={turn.highlightedZones}
           onZoneClick={turn.moveSelecting ? turn.onZoneClickForMove : undefined}
+          mapExpanded={mapExpanded}
+          onToggleMap={() => setMapManuallyToggled(prev => !prev)}
         />
       </div>
 
@@ -63,6 +76,7 @@ export function CombatView() {
             legalActions={turn.legalActions}
             onSelectAction={turn.selectAction}
             onPass={turn.passTurn}
+            onMoveSelecting={handleMoveSelecting}
           />
         )}
 
