@@ -5,3 +5,5 @@ export * from './ItemsEditor';
 export * from './TalentsEditor';
 export * from './CombatSetupView';
 export * from './InitiativeView';
+export * from './CombatView';
+export * from './ResultView';

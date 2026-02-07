@@ -40,12 +40,49 @@ export interface CombatSetup {
   advantageSide: CharacterRole | null;
 }
 
+// --- Zone & Combat types ---
+
+export interface Zone {
+  id: string;
+  name: string;
+  cluttered: boolean;
+}
+
+export interface ZoneMap {
+  id: string;
+  name: string;
+  zones: [Zone, Zone, Zone];
+}
+
+export type CombatSubPhase = 'turn-announce' | 'action-select' | 'dice-roll' | 'effect' | 'turn-end';
+export type CombatActionType = 'move' | 'close-attack' | 'ranged-attack' | 'partial-cover';
+
+export interface CombatState {
+  zoneMap: ZoneMap;
+  playerZoneIndex: number;
+  enemyZoneIndex: number;
+  playerStress: number;
+  enemyStress: number;
+  playerCover: boolean;
+  enemyCover: boolean;
+  currentTurn: CharacterRole;
+  round: number;
+  subPhase: CombatSubPhase;
+  actionsRemaining: number;
+  fullActionUsed: boolean;
+  turnOrder: CharacterRole[];
+  combatLog: string[];
+}
+
+// --- Game state ---
+
 export type GamePhase = 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat-setup' | 'initiative' | 'combat' | 'result';
 
 export interface GameState {
   playerCharacter: Character | null;
   enemyCharacter: Character | null;
   combatSetup: CombatSetup;
+  combatState: CombatState | null;
   phase: GamePhase;
 }
 
@@ -58,4 +95,14 @@ export type GameAction =
   | { type: 'UPDATE_TALENT'; payload: { role: CharacterRole; talentKey: string; value: number } }
   | { type: 'SET_COMBAT_SETUP'; payload: CombatSetup }
   | { type: 'SET_PHASE'; payload: GamePhase }
-  | { type: 'RESET_COMBAT' };
+  | { type: 'RESET_COMBAT' }
+  | { type: 'INIT_COMBAT'; payload: { zoneMap: ZoneMap; turnOrder: CharacterRole[] } }
+  | { type: 'SET_COMBAT_SUB_PHASE'; payload: CombatSubPhase }
+  | { type: 'MOVE_CHARACTER'; payload: { role: CharacterRole; zoneIndex: number } }
+  | { type: 'SET_COVER'; payload: { role: CharacterRole; hasCover: boolean } }
+  | { type: 'UPDATE_HEALTH'; payload: { role: CharacterRole; delta: number } }
+  | { type: 'UPDATE_STRESS'; payload: { role: CharacterRole; delta: number } }
+  | { type: 'SPEND_ACTION'; payload: { isFull: boolean } }
+  | { type: 'ADVANCE_TURN' }
+  | { type: 'LOG_COMBAT'; payload: { message: string } }
+  | { type: 'END_COMBAT'; payload: { winner: CharacterRole } };

@@ -1,0 +1,45 @@
+.zone-map {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 20px;
+  background-color: var(--color-bg);
+  overflow-x: auto;
+  width: 100%;
+}
+
+.zone-map__item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.zone-map__connector {
+  width: 32px;
+  height: 2px;
+  margin: 0 8px;
+  border-top: 2px dashed var(--color-primary-dim);
+}
+
+@media (min-width: 480px) {
+  .zone-map {
+    padding: 24px;
+  }
+
+  .zone-map__connector {
+    width: 40px;
+    margin: 0 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .zone-map {
+    padding: 32px;
+    justify-content: center;
+  }
+
+  .zone-map__connector {
+    width: 60px;
+    margin: 0 16px;
+  }
+}

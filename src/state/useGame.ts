@@ -1,6 +1,6 @@
 import { useContext, useCallback } from 'react';
 import { GameContext } from './GameContext';
-import { Character, CharacterRole, GamePhase, Weapon, Armor, CombatSetup } from './types';
+import { Character, CharacterRole, GamePhase, Weapon, Armor, CombatSetup, CombatSubPhase, ZoneMap } from './types';
 
 export function useGame() {
   const context = useContext(GameContext);
@@ -71,11 +71,81 @@ export function useGame() {
     dispatch({ type: 'RESET_COMBAT' });
   }, [dispatch]);
 
+  // --- Combat dispatchers ---
+
+  const initCombat = useCallback(
+    (zoneMap: ZoneMap, turnOrder: CharacterRole[]) => {
+      dispatch({ type: 'INIT_COMBAT', payload: { zoneMap, turnOrder } });
+    },
+    [dispatch]
+  );
+
+  const setCombatSubPhase = useCallback(
+    (subPhase: CombatSubPhase) => {
+      dispatch({ type: 'SET_COMBAT_SUB_PHASE', payload: subPhase });
+    },
+    [dispatch]
+  );
+
+  const moveCharacter = useCallback(
+    (role: CharacterRole, zoneIndex: number) => {
+      dispatch({ type: 'MOVE_CHARACTER', payload: { role, zoneIndex } });
+    },
+    [dispatch]
+  );
+
+  const setCover = useCallback(
+    (role: CharacterRole, hasCover: boolean) => {
+      dispatch({ type: 'SET_COVER', payload: { role, hasCover } });
+    },
+    [dispatch]
+  );
+
+  const updateHealth = useCallback(
+    (role: CharacterRole, delta: number) => {
+      dispatch({ type: 'UPDATE_HEALTH', payload: { role, delta } });
+    },
+    [dispatch]
+  );
+
+  const updateStress = useCallback(
+    (role: CharacterRole, delta: number) => {
+      dispatch({ type: 'UPDATE_STRESS', payload: { role, delta } });
+    },
+    [dispatch]
+  );
+
+  const spendAction = useCallback(
+    (isFull: boolean) => {
+      dispatch({ type: 'SPEND_ACTION', payload: { isFull } });
+    },
+    [dispatch]
+  );
+
+  const advanceTurn = useCallback(() => {
+    dispatch({ type: 'ADVANCE_TURN' });
+  }, [dispatch]);
+
+  const logCombat = useCallback(
+    (message: string) => {
+      dispatch({ type: 'LOG_COMBAT', payload: { message } });
+    },
+    [dispatch]
+  );
+
+  const endCombat = useCallback(
+    (winner: CharacterRole) => {
+      dispatch({ type: 'END_COMBAT', payload: { winner } });
+    },
+    [dispatch]
+  );
+
   return {
     // State
     playerCharacter: state.playerCharacter,
     enemyCharacter: state.enemyCharacter,
     combatSetup: state.combatSetup,
+    combatState: state.combatState,
     phase: state.phase,
 
     // Actions
@@ -88,5 +158,17 @@ export function useGame() {
     setCombatSetup,
     setPhase,
     resetCombat,
+
+    // Combat actions
+    initCombat,
+    setCombatSubPhase,
+    moveCharacter,
+    setCover,
+    updateHealth,
+    updateStress,
+    spendAction,
+    advanceTurn,
+    logCombat,
+    endCombat,
   };
 }

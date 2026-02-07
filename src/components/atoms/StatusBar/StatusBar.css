@@ -1,0 +1,112 @@
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 2px solid;
+  border-radius: 4px;
+  background-color: var(--color-bg-elevated);
+  font-family: var(--font-terminal);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+  flex-wrap: wrap;
+}
+
+.status-bar__name {
+  font-weight: 700;
+  min-width: fit-content;
+}
+
+.status-bar__stat {
+  font-size: var(--text-xs);
+  opacity: 0.9;
+}
+
+.status-bar__badge {
+  font-size: var(--text-xs);
+  padding: 2px 6px;
+  border: 1px solid;
+  border-radius: 2px;
+}
+
+/* Player variant (green) */
+.status-bar--player {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.status-bar--player .status-bar__badge {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+/* Enemy variant (red) */
+.status-bar--enemy {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.status-bar--enemy .status-bar__badge {
+  border-color: var(--color-danger);
+  background-color: var(--color-danger);
+  color: var(--color-bg);
+}
+
+/* Broken state */
+.status-bar--broken {
+  opacity: 0.7;
+}
+
+.status-bar__badge--broken {
+  background-color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+  color: var(--color-bg) !important;
+  animation: pulse-broken 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-broken {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (min-width: 480px) {
+  .status-bar {
+    gap: 16px;
+    padding: 10px 16px;
+    font-size: var(--text-base);
+  }
+
+  .status-bar__stat {
+    font-size: var(--text-sm);
+  }
+
+  .status-bar__badge {
+    font-size: var(--text-sm);
+    padding: 3px 8px;
+  }
+}
+
+@media (min-width: 768px) {
+  .status-bar {
+    gap: 20px;
+    padding: 12px 20px;
+    font-size: var(--text-lg);
+  }
+
+  .status-bar__stat {
+    font-size: var(--text-base);
+  }
+
+  .status-bar__badge {
+    font-size: var(--text-base);
+    padding: 4px 10px;
+  }
+}

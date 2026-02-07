@@ -1,0 +1,114 @@
+.zone-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100px;
+  min-height: 80px;
+  padding: 12px;
+  border: 2px solid var(--color-primary-dim);
+  border-radius: 4px;
+  background-color: var(--color-bg-elevated);
+  font-family: var(--font-terminal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.zone-cell__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.zone-cell__name {
+  font-size: var(--text-base);
+  color: var(--color-primary);
+}
+
+.zone-cell__clutter {
+  font-size: var(--text-xs);
+  color: var(--color-warning);
+}
+
+.zone-cell__markers {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+}
+
+.zone-cell__marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.zone-cell__marker--player {
+  background-color: var(--color-primary);
+  box-shadow: 0 0 4px var(--color-primary);
+}
+
+.zone-cell__marker--enemy {
+  background-color: var(--color-danger);
+  box-shadow: 0 0 4px var(--color-danger);
+}
+
+/* Highlighted state */
+.zone-cell--highlighted {
+  border-color: var(--color-primary-bright);
+  box-shadow: 0 0 8px var(--color-primary);
+}
+
+/* Clickable state */
+.zone-cell--clickable {
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.zone-cell--clickable:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 4px var(--color-primary);
+}
+
+.zone-cell--clickable:active {
+  border-color: var(--color-primary-bright);
+  background-color: var(--color-bg);
+}
+
+@media (min-width: 480px) {
+  .zone-cell {
+    min-width: 120px;
+    min-height: 100px;
+    padding: 16px;
+  }
+
+  .zone-cell__name {
+    font-size: var(--text-lg);
+  }
+
+  .zone-cell__marker {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .zone-cell {
+    min-width: 140px;
+    min-height: 120px;
+    padding: 20px;
+  }
+
+  .zone-cell__name {
+    font-size: var(--text-xl);
+  }
+
+  .zone-cell__marker {
+    width: 24px;
+    height: 24px;
+  }
+}

@@ -1,0 +1,46 @@
+.combat-hud {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 600px;
+  padding: 16px;
+  background-color: var(--color-bg);
+  font-family: var(--font-terminal);
+}
+
+.combat-hud__round {
+  text-align: center;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-primary-dim);
+}
+
+@media (min-width: 480px) {
+  .combat-hud {
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .combat-hud__round {
+    font-size: var(--text-xl);
+    padding: 10px 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .combat-hud {
+    gap: 24px;
+    padding: 24px;
+    max-width: 800px;
+  }
+
+  .combat-hud__round {
+    font-size: var(--text-2xl);
+    padding: 12px 0;
+  }
+}

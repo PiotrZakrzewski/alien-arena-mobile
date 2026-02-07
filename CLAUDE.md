@@ -3,7 +3,7 @@ keep CLAUDE.md up to date, esp any global choices like architecture, patterns, r
 
 Mobile web application simulating combat in Alien RPG Evolved Edition. Built step by step using modular blocks in Storybook.
 
-## Current Deliverable: Combat Dice Rolling
+## Current Deliverable: Full Combat System
 
 ### Component Architecture (Atomic Design)
 
@@ -14,12 +14,23 @@ src/
 │   ├── molecules/       # Composed from atoms
 │   ├── organisms/       # Complex UI sections
 │   └── index.ts         # Barrel exports
+├── combat/              # Combat logic (pure functions + orchestration hook)
+│   ├── legalActions.ts          # Legal action calculator
+│   ├── rangeCalculator.ts       # Zone distance & weapon range checks
+│   ├── dicePoolCalculator.ts    # Attack/defense dice pool computation
+│   ├── rollResolver.ts          # Dice rolling & attack resolution
+│   ├── stressResolver.ts        # Panic detection
+│   ├── useCombatTurn.ts         # Combat turn orchestrator hook
+│   ├── ai/
+│   │   └── aiDecisionTree.ts    # Enemy AI decision tree
+│   └── index.ts                 # Barrel exports
 ├── data/                # Static game data
 │   ├── skillDefinitions.ts      # Skill registry
 │   ├── characterPresets.ts      # Static character templates
 │   ├── characterFactory.ts      # Preset → Character factory
 │   ├── equipmentDefinitions.ts  # Weapon/armor constants & defaults
 │   ├── talentDefinitions.ts     # Talent registry (career-filtered)
+│   ├── zoneMapDefinitions.ts    # Zone map presets & action definitions
 │   └── index.ts                 # Barrel exports
 ├── state/               # Global state management
 │   ├── types.ts         # State & action types
@@ -39,6 +50,9 @@ src/
 - **StatValue** - Displays numeric value (0-5)
 - **Die** - Single d6 die face, normal (green) or stress (amber) variant, success highlight, rolling animation
 - **InitiativeCard** - Single initiative card (1-10), player (green) or enemy (red) variant, winner highlight, drawing animation
+- **ZoneCell** - Rectangular zone cell with name, clutter indicator, character markers
+- **StatusBar** - Compact health/stress/cover/broken status line
+- **ActionButton** - Terminal button with [Q]/[F] speed tag
 
 ### Molecules
 - **NavigationChevrons** - Left/right arrows (2x IconButton)
@@ -47,6 +61,7 @@ src/
 - **SkillRow** - Skill control with base stat badge (InfoIcon + StatLabel + badge + StatEditor)
 - **DiceBreakdown** - Shows dice pool sources with positive/negative modifiers and base+stress totals
 - **DicePool** - Sorted grid of Die atoms with rolling animation; successes first, normal before stress
+- **ZoneMap** - Horizontal row of 3 ZoneCells with dashed connectors, click-to-move support
 
 ### Organisms
 - **CharacterHeader** - Navigation + name display
@@ -55,6 +70,10 @@ src/
 - **PhaseNavigation** - Back/Next buttons for phase transitions
 - **DiceRollResult** - Full dice roll panel: breakdown, pool, success count, push mechanics, context text
 - **InitiativeResult** - Initiative comparison: two cards side-by-side with names, VS separator, winner text, continue button
+- **CombatHud** - Round indicator + 2 StatusBars + ZoneMap (always visible during combat)
+- **ActionSelect** - Action selection panel with actions remaining, legal actions as ActionButtons, move zone sub-selection
+- **TurnAnnounce** - "ROUND X — NAME'S TURN" announcement overlay
+- **EffectSummary** - Color-coded effect lines (damage/move/cover/panic/info) + continue button
 
 ### Views
 - **CharacterSelector** - Browse presets with description text, select copies preset to active character
@@ -64,6 +83,8 @@ src/
 - **TalentsEditor** - Career-filtered talent picker with stackable talents
 - **CombatSetupView** - Combat type selector (normal/surprise/ambush) with advantage side picker
 - **InitiativeView** - Draws initiative cards based on combat setup; surprise/ambush gives card #1 to advantaged side
+- **CombatView** - Turn-based combat with zone map, action selection, dice rolling, AI auto-play
+- **ResultView** - Victory/defeat screen with final stats and play again button
 
 ## Data Layer
 
@@ -144,6 +165,7 @@ interface CombatSetup {
   playerCharacter: Character | null   // Active player instance
   enemyCharacter: Character | null    // Active enemy instance
   combatSetup: CombatSetup            // Combat type and advantage side
+  combatState: CombatState | null     // Active combat state (null until INIT_COMBAT)
   phase: 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat-setup' | 'initiative' | 'combat' | 'result'
 }
 ```
@@ -202,19 +224,94 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 | `UPDATE_TALENT` | Edit a talent stack on active character |
 | `SET_COMBAT_SETUP` | Set combat type and advantage side |
 | `SET_PHASE` | Navigate phases |
-| `RESET_COMBAT` | Restore health, reset phase |
+| `RESET_COMBAT` | Restore health, reset phase, clear combatState |
+| `INIT_COMBAT` | Create CombatState (player zone 0, enemy zone 2) |
+| `SET_COMBAT_SUB_PHASE` | Transition combat sub-phase |
+| `MOVE_CHARACTER` | Update zone position, clears cover |
+| `SET_COVER` | Set/clear cover flag |
+| `UPDATE_HEALTH` | Apply damage/healing (clamped 0–max) |
+| `UPDATE_STRESS` | Change stress level (clamped 0–10, ignored if broken) |
+| `SPEND_ACTION` | Decrement actionsRemaining, set fullActionUsed if full |
+| `ADVANCE_TURN` | Switch turn, reset actions, bump round |
+| `LOG_COMBAT` | Append to combat log |
+| `END_COMBAT` | Set phase to result |
 
 ### Usage
 ```tsx
 import { useGame } from './state'
 
-const { playerCharacter, combatSetup, selectCharacter, updateStat, updateSkill, updateTalent, setWeapon, setArmor, setCombatSetup, setPhase } = useGame()
+const { playerCharacter, combatSetup, combatState, selectCharacter, updateStat, updateSkill, updateTalent, setWeapon, setArmor, setCombatSetup, setPhase, initCombat, setCombatSubPhase, moveCharacter, setCover, updateHealth, updateStress, spendAction, advanceTurn, logCombat, endCombat } = useGame()
 ```
+
+## Combat System
+
+### Zone-Based Positioning
+- 3 zones per map (pre-configured presets in `zoneMapDefinitions.ts`)
+- Player starts at zone 0, enemy at zone 2
+- Movement: adjacent zones only (±1 index)
+- Zone distance: 0 = adjacent, 1 = short, 2 = medium
+- Some zones are "cluttered" (allow partial cover)
+
+### CombatState
+```ts
+interface CombatState {
+  zoneMap: ZoneMap;
+  playerZoneIndex: number;         // 0, 1, or 2
+  enemyZoneIndex: number;
+  playerStress: number;
+  enemyStress: number;
+  playerCover: boolean;
+  enemyCover: boolean;
+  currentTurn: CharacterRole;
+  round: number;
+  subPhase: CombatSubPhase;        // 'turn-announce' | 'action-select' | 'dice-roll' | 'effect' | 'turn-end'
+  actionsRemaining: number;        // starts at 2
+  fullActionUsed: boolean;
+  turnOrder: CharacterRole[];
+  combatLog: string[];
+}
+```
+
+### Action Economy (per ALIEN RPG rules)
+Each turn: 2 action points. Full action costs 1 point + sets `fullActionUsed`. Quick action costs 1 point.
+
+| Action | Speed | Requirements |
+|--------|-------|-------------|
+| Move | Quick | Adjacent zone exists |
+| Close Attack | Full | Same zone + close/unarmed weapon |
+| Ranged Attack | Full | Ranged weapon + target in range |
+| Partial Cover | Quick | Cluttered zone + not already in cover |
+
+### Combat Sub-Phase State Machine
+```
+turn-announce → action-select (player) or auto-AI (enemy)
+  → [if move/cover] → effect → check-actions-remaining
+  → [if attack] → dice-roll → effect → check-actions-remaining
+check-actions-remaining:
+  → [actions left] → action-select / AI again
+  → [no actions] → advance-turn → next turn-announce
+  → [someone broken] → end-combat → result phase
+```
+
+### Dice Mechanics
+- Attack pool: base stat + skill + weapon modifier − cover penalty (min 1 die)
+- Defense pool: base stat + skill
+- Stress dice: added equal to stress level, panic on any 1
+- Push: re-roll non-successes in base dice, +1 stress die, once per roll
+- Success = die shows 6
+- Hit = attack successes > defense successes
+- Damage = weapon.damage + (net successes − 1) − armor rating
+
+### AI Decision Tree (`src/combat/ai/aiDecisionTree.ts`)
+Priority-based: broken→retreat, same zone→close attack, in range→ranged attack, move toward target, take cover, fallback move.
+
+### Combat Turn Orchestrator (`src/combat/useCombatTurn.ts`)
+Central hook connecting reducer, legal actions, dice resolution, and AI. Uses refs to avoid stale closures in AI auto-play useEffect. Tracks actions spent locally to handle batched React state updates.
 
 ## Navigation Flow
 
 ```
-CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor → [Setup] → CombatSetupView → [Fight!] → InitiativeView → [Continue] → Combat
+CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor → [Setup] → CombatSetupView → [Fight!] → InitiativeView → [Continue] → CombatView → [Result] → ResultView → [Play Again] → CharacterSelector
                               ← [Back] ←    ← [Stats] ←              ← [Skills] ←          ← [Items] ←                          ← [Talents] ←
 ```
 
@@ -223,6 +320,8 @@ CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor →
 - CharacterSelector browses presets (description text), select creates Character and navigates to stats
 - StatsEditor edits STR/AGI, SkillsEditor edits skills — each view is standalone
 - Back navigates to previous phase, Next to following phase
+- Combat ends when either character reaches 0 HP → ResultView
+- Play Again resets health, clears combat state, returns to character select
 
 ## Design System
 

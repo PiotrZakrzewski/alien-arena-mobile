@@ -1,0 +1,102 @@
+.turn-announce {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 600px;
+  padding: 40px 20px;
+  background-color: var(--color-bg);
+  font-family: var(--font-terminal);
+  text-align: center;
+  min-height: 400px;
+}
+
+.turn-announce__round {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.8;
+}
+
+.turn-announce__name {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 20px;
+  border: 3px solid;
+  border-radius: 8px;
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+/* Player variant (green) */
+.turn-announce--player .turn-announce__round,
+.turn-announce--player .turn-announce__name {
+  color: var(--color-primary);
+}
+
+.turn-announce--player .turn-announce__name {
+  border-color: var(--color-primary);
+}
+
+/* Enemy variant (red) */
+.turn-announce--enemy .turn-announce__round,
+.turn-announce--enemy .turn-announce__name {
+  color: var(--color-danger);
+}
+
+.turn-announce--enemy .turn-announce__name {
+  border-color: var(--color-danger);
+}
+
+@keyframes pulse-border {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.02);
+  }
+}
+
+@media (min-width: 480px) {
+  .turn-announce {
+    gap: 32px;
+    padding: 50px 30px;
+    max-width: 700px;
+    min-height: 500px;
+  }
+
+  .turn-announce__round {
+    font-size: var(--text-3xl);
+  }
+
+  .turn-announce__name {
+    font-size: var(--text-4xl);
+    padding: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .turn-announce {
+    gap: 40px;
+    padding: 60px 40px;
+    max-width: 800px;
+    min-height: 600px;
+  }
+
+  .turn-announce__round {
+    font-size: var(--text-4xl);
+  }
+
+  .turn-announce__name {
+    font-size: var(--text-5xl);
+    padding: 32px;
+    border-width: 4px;
+  }
+}

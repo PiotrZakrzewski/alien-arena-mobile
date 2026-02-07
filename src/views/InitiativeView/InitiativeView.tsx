@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { InitiativeResult } from '../../components/organisms/InitiativeResult';
 import { useGame } from '../../state';
-import type { CombatSetup } from '../../state/types';
+import type { CombatSetup, CharacterRole } from '../../state/types';
+import { ZONE_MAP_PRESETS } from '../../data/zoneMapDefinitions';
 import './InitiativeView.css';
 
 function drawCard(): number {
@@ -28,7 +29,7 @@ function drawCards(setup: CombatSetup): [number, number] {
 }
 
 export function InitiativeView() {
-  const { playerCharacter, enemyCharacter, combatSetup, setPhase } = useGame();
+  const { playerCharacter, enemyCharacter, combatSetup, initCombat } = useGame();
 
   const [playerCard, enemyCard] = useMemo(() => drawCards(combatSetup), [combatSetup]);
 
@@ -37,7 +38,13 @@ export function InitiativeView() {
   }
 
   const handleContinue = () => {
-    setPhase('combat');
+    // Pick a random zone map
+    const zoneMap = ZONE_MAP_PRESETS[Math.floor(Math.random() * ZONE_MAP_PRESETS.length)];
+    // Lower card goes first
+    const turnOrder: CharacterRole[] = playerCard < enemyCard
+      ? ['player', 'enemy']
+      : ['enemy', 'player'];
+    initCombat(zoneMap, turnOrder);
   };
 
   return (
