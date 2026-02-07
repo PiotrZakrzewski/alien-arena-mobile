@@ -227,8 +227,9 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 | `RESET_COMBAT` | Restore health, reset phase, clear combatState |
 | `INIT_COMBAT` | Create CombatState (player zone 0, enemy zone 2) |
 | `SET_COMBAT_SUB_PHASE` | Transition combat sub-phase |
-| `MOVE_CHARACTER` | Update zone position, clears cover |
+| `MOVE_CHARACTER` | Update zone position, clears cover and engagement |
 | `SET_COVER` | Set/clear cover flag |
+| `SET_ENGAGED` | Set/clear engagement (Adjacent vs Short range in same zone) |
 | `UPDATE_HEALTH` | Apply damage/healing (clamped 0–max) |
 | `UPDATE_STRESS` | Change stress level (clamped 0–10, ignored if broken) |
 | `SPEND_ACTION` | Decrement actionsRemaining, set fullActionUsed if full |
@@ -240,7 +241,7 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 ```tsx
 import { useGame } from './state'
 
-const { playerCharacter, combatSetup, combatState, selectCharacter, updateStat, updateSkill, updateTalent, setWeapon, setArmor, setCombatSetup, setPhase, initCombat, setCombatSubPhase, moveCharacter, setCover, updateHealth, updateStress, spendAction, advanceTurn, logCombat, endCombat } = useGame()
+const { playerCharacter, combatSetup, combatState, selectCharacter, updateStat, updateSkill, updateTalent, setWeapon, setArmor, setCombatSetup, setPhase, initCombat, setCombatSubPhase, moveCharacter, setCover, setEngaged, updateHealth, updateStress, spendAction, advanceTurn, logCombat, endCombat } = useGame()
 ```
 
 ## Combat System
@@ -249,7 +250,12 @@ const { playerCharacter, combatSetup, combatState, selectCharacter, updateStat, 
 - 3 zones per map (pre-configured presets in `zoneMapDefinitions.ts`)
 - Player starts at zone 0, enemy at zone 2
 - Movement: adjacent zones only (±1 index)
-- Zone distance: 0 = adjacent, 1 = short, 2 = medium
+- Zone distance: 0 (same zone), 1 = short, 2 = medium
+- Same zone has two sub-ranges: **Short** (default) and **Adjacent** (engaged in melee)
+- `engaged: boolean` on CombatState tracks whether characters in same zone are at Adjacent range
+- Entering a zone puts you at Short range (engaged auto-clears on movement)
+- Engage (Short→Adjacent) and Disengage (Adjacent→Short) are quick actions
+- Close combat requires Adjacent (engaged). Ranged attacks blocked while engaged.
 - Some zones are "cluttered" (allow partial cover)
 
 ### CombatState
@@ -267,6 +273,7 @@ interface CombatState {
   subPhase: CombatSubPhase;        // 'turn-announce' | 'action-select' | 'dice-roll' | 'effect' | 'turn-end'
   actionsRemaining: number;        // starts at 2
   fullActionUsed: boolean;
+  engaged: boolean;              // true = Adjacent (melee), false = Short (same zone)
   turnOrder: CharacterRole[];
   combatLog: string[];
 }
@@ -278,14 +285,16 @@ Each turn: 2 action points. Full action costs 1 point + sets `fullActionUsed`. Q
 | Action | Speed | Requirements |
 |--------|-------|-------------|
 | Move | Quick | Adjacent zone exists |
-| Close Attack | Full | Same zone + close/unarmed weapon |
-| Ranged Attack | Full | Ranged weapon + target in range |
+| Engage | Quick | Same zone + not engaged + not broken |
+| Disengage | Quick | Same zone + engaged |
+| Close Attack | Full | Engaged (Adjacent range) + close/unarmed weapon |
+| Ranged Attack | Full | Ranged weapon + target in range + not engaged |
 | Partial Cover | Quick | Cluttered zone + not already in cover |
 
 ### Combat Sub-Phase State Machine
 ```
 turn-announce → action-select (player) or auto-AI (enemy)
-  → [if move/cover] → effect → check-actions-remaining
+  → [if move/cover/engage/disengage] → effect → check-actions-remaining
   → [if attack] → dice-roll → effect → check-actions-remaining
 check-actions-remaining:
   → [actions left] → action-select / AI again
@@ -303,7 +312,7 @@ check-actions-remaining:
 - Damage = weapon.damage + (net successes − 1) − armor rating
 
 ### AI Decision Tree (`src/combat/ai/aiDecisionTree.ts`)
-Priority-based: broken→retreat, same zone→close attack, in range→ranged attack, move toward target, take cover, fallback move.
+Priority-based: broken→disengage+retreat, engaged+close→close attack, same zone+close+not engaged→engage, ranged+engaged→disengage, in range→ranged attack, move toward target, take cover, fallback move.
 
 ### Combat Turn Orchestrator (`src/combat/useCombatTurn.ts`)
 Central hook connecting reducer, legal actions, dice resolution, and AI. Uses refs to avoid stale closures in AI auto-play useEffect. Tracks actions spent locally to handle batched React state updates.

@@ -26,6 +26,7 @@ export function getLegalActions(state: GameState): LegalAction[] {
   if (combat.actionsRemaining === 0) return [];
 
   const actions: LegalAction[] = [];
+  const distance = getZoneDistance(myZone, theirZone);
 
   // Move — quick action. Adjacent zone (index ± 1 within [0,2])
   const moveOptions: number[] = [];
@@ -41,32 +42,51 @@ export function getLegalActions(state: GameState): LegalAction[] {
     });
   }
 
-  // If broken, only move is allowed
-  if (isBroken) return actions;
+  // If broken, only move is allowed (plus disengage if engaged)
+  if (isBroken) {
+    if (distance === 0 && combat.engaged) {
+      actions.push({ type: 'disengage', speed: 'quick', available: true });
+    }
+    return actions;
+  }
 
-  const distance = getZoneDistance(myZone, theirZone);
+  // Engage — quick action, same zone, not engaged
+  if (distance === 0 && !combat.engaged) {
+    actions.push({ type: 'engage', speed: 'quick', available: true });
+  }
 
-  // Close attack — full action, requires same zone + close/unarmed weapon
-  const canCloseAttack = distance === 0 && (character.weapon.type === 'close' || character.weapon.type === 'unarmed');
-  if (canCloseAttack) {
-    if (combat.fullActionUsed) {
+  // Disengage — quick action, same zone, engaged
+  if (distance === 0 && combat.engaged) {
+    actions.push({ type: 'disengage', speed: 'quick', available: true });
+  }
+
+  // Close attack — full action, requires engaged + close/unarmed weapon
+  const hasCloseWeapon = character.weapon.type === 'close' || character.weapon.type === 'unarmed';
+  if (hasCloseWeapon && distance === 0) {
+    if (!combat.engaged) {
+      actions.push({ type: 'close-attack', speed: 'full', available: false, reason: 'Must engage first' });
+    } else if (combat.fullActionUsed) {
       actions.push({ type: 'close-attack', speed: 'full', available: false, reason: 'Full action already used' });
     } else {
       actions.push({ type: 'close-attack', speed: 'full', available: true });
     }
   }
 
-  // Ranged attack — full action, requires ranged weapon + in range
+  // Ranged attack — full action, requires ranged weapon + in range + not engaged
   if (character.weapon.type === 'ranged') {
-    const inRange = isWeaponInRange(character.weapon, distance);
-    if (inRange) {
-      if (combat.fullActionUsed) {
-        actions.push({ type: 'ranged-attack', speed: 'full', available: false, reason: 'Full action already used' });
-      } else {
-        actions.push({ type: 'ranged-attack', speed: 'full', available: true });
-      }
+    if (distance === 0 && combat.engaged) {
+      actions.push({ type: 'ranged-attack', speed: 'full', available: false, reason: 'Cannot fire while engaged' });
     } else {
-      actions.push({ type: 'ranged-attack', speed: 'full', available: false, reason: 'Target out of range' });
+      const inRange = isWeaponInRange(character.weapon, distance, combat.engaged);
+      if (inRange) {
+        if (combat.fullActionUsed) {
+          actions.push({ type: 'ranged-attack', speed: 'full', available: false, reason: 'Full action already used' });
+        } else {
+          actions.push({ type: 'ranged-attack', speed: 'full', available: true });
+        }
+      } else {
+        actions.push({ type: 'ranged-attack', speed: 'full', available: false, reason: 'Target out of range' });
+      }
     }
   }
 

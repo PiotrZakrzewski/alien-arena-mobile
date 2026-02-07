@@ -38,6 +38,10 @@ const meta = {
       control: 'boolean',
       description: 'Whether character is broken',
     },
+    isEngaged: {
+      control: 'boolean',
+      description: 'Whether character is engaged in melee',
+    },
   },
   decorators: [
     (Story) => (
@@ -132,6 +136,32 @@ export const EnemyBroken: Story = {
     variant: 'enemy',
     hasCover: false,
     isBroken: true,
+  },
+};
+
+export const PlayerEngaged: Story = {
+  args: {
+    name: 'MARINE',
+    health: 6,
+    maxHealth: 7,
+    stress: 2,
+    variant: 'player',
+    hasCover: false,
+    isBroken: false,
+    isEngaged: true,
+  },
+};
+
+export const EnemyEngaged: Story = {
+  args: {
+    name: 'XENOMORPH',
+    health: 7,
+    maxHealth: 8,
+    stress: 0,
+    variant: 'enemy',
+    hasCover: false,
+    isBroken: false,
+    isEngaged: true,
   },
 };
 

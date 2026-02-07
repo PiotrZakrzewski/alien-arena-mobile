@@ -16,8 +16,14 @@ function rangeIndex(range: RangeZone): number {
   return RANGE_ORDER.indexOf(range);
 }
 
-export function isWeaponInRange(weapon: Weapon, distance: number): boolean {
-  const actualRange = zoneDistanceToRange(distance);
+export function getEffectiveRange(distance: number, engaged: boolean): RangeZone {
+  if (distance === 0) return engaged ? 'adjacent' : 'short';
+  if (distance === 1) return 'short';
+  return 'medium';
+}
+
+export function isWeaponInRange(weapon: Weapon, distance: number, engaged: boolean): boolean {
+  const actualRange = getEffectiveRange(distance, engaged);
   const actualIdx = rangeIndex(actualRange);
   return actualIdx >= rangeIndex(weapon.minRange) && actualIdx <= rangeIndex(weapon.maxRange);
 }

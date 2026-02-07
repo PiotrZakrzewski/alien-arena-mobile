@@ -17,6 +17,7 @@ export function calculateAttackPool(
   stressLevel: number,
   targetHasCover: boolean,
   _zoneDistance: number,
+  _engaged?: boolean,
 ): DicePoolResult {
   const sources: DiceSource[] = [];
   let baseDice = 0;

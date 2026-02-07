@@ -55,7 +55,7 @@ export interface ZoneMap {
 }
 
 export type CombatSubPhase = 'turn-announce' | 'action-select' | 'dice-roll' | 'effect' | 'turn-end';
-export type CombatActionType = 'move' | 'close-attack' | 'ranged-attack' | 'partial-cover';
+export type CombatActionType = 'move' | 'close-attack' | 'ranged-attack' | 'partial-cover' | 'engage' | 'disengage';
 
 export interface CombatState {
   zoneMap: ZoneMap;
@@ -71,6 +71,7 @@ export interface CombatState {
   actionsRemaining: number;
   fullActionUsed: boolean;
   turnOrder: CharacterRole[];
+  engaged: boolean;
   combatLog: string[];
 }
 
@@ -105,4 +106,5 @@ export type GameAction =
   | { type: 'SPEND_ACTION'; payload: { isFull: boolean } }
   | { type: 'ADVANCE_TURN' }
   | { type: 'LOG_COMBAT'; payload: { message: string } }
+  | { type: 'SET_ENGAGED'; payload: { engaged: boolean } }
   | { type: 'END_COMBAT'; payload: { winner: CharacterRole } };

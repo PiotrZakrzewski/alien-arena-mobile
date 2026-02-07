@@ -83,3 +83,35 @@ export const MidCombat: Story = {
     onToggleMap: () => {},
   },
 };
+
+export const EngagedInMelee: Story = {
+  args: {
+    round: 2,
+    player: {
+      name: 'MARINE',
+      health: 6,
+      maxHealth: 8,
+      stress: 2,
+      variant: 'player',
+      hasCover: false,
+      isBroken: false,
+      isEngaged: true,
+    },
+    enemy: {
+      name: 'XENOMORPH',
+      health: 8,
+      maxHealth: 10,
+      stress: 0,
+      variant: 'enemy',
+      hasCover: false,
+      isBroken: false,
+      isEngaged: true,
+    },
+    zones: mockZones,
+    playerZoneIndex: 1,
+    enemyZoneIndex: 1,
+    engaged: true,
+    mapExpanded: true,
+    onToggleMap: () => {},
+  },
+};

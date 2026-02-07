@@ -7,6 +7,7 @@ export interface ZoneMapProps {
   playerZoneIndex: number;
   enemyZoneIndex: number;
   highlightedZones?: number[];
+  engaged?: boolean;
   onZoneClick?: (zoneIndex: number) => void;
 }
 
@@ -15,6 +16,7 @@ export function ZoneMap({
   playerZoneIndex,
   enemyZoneIndex,
   highlightedZones = [],
+  engaged,
   onZoneClick,
 }: ZoneMapProps) {
   return (
@@ -27,6 +29,7 @@ export function ZoneMap({
             hasPlayer={index === playerZoneIndex}
             hasEnemy={index === enemyZoneIndex}
             highlighted={highlightedZones.includes(index)}
+            engaged={index === playerZoneIndex && index === enemyZoneIndex ? engaged : undefined}
             onClick={onZoneClick ? () => onZoneClick(index) : undefined}
           />
           {index < zones.length - 1 && (

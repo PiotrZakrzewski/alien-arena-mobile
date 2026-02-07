@@ -12,6 +12,7 @@ export interface CombatHudProps {
   playerZoneIndex: number;
   enemyZoneIndex: number;
   highlightedZones?: number[];
+  engaged?: boolean;
   onZoneClick?: (zoneIndex: number) => void;
   mapExpanded: boolean;
   onToggleMap: () => void;
@@ -25,6 +26,7 @@ export function CombatHud({
   playerZoneIndex,
   enemyZoneIndex,
   highlightedZones,
+  engaged,
   onZoneClick,
   mapExpanded,
   onToggleMap,
@@ -49,6 +51,7 @@ export function CombatHud({
           playerZoneIndex={playerZoneIndex}
           enemyZoneIndex={enemyZoneIndex}
           highlightedZones={highlightedZones}
+          engaged={engaged}
           onZoneClick={onZoneClick}
         />
       )}

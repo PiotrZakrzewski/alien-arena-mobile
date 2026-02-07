@@ -115,6 +115,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         subPhase: 'turn-announce',
         actionsRemaining: 2,
         fullActionUsed: false,
+        engaged: false,
         turnOrder,
         combatLog: [],
       };
@@ -137,6 +138,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.combatState,
           [zoneKey]: zoneIndex,
           [coverKey]: false, // moving clears cover
+          engaged: false, // moving clears engagement
         },
       };
     }
@@ -216,6 +218,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.combatState,
           combatLog: [...state.combatState.combatLog, action.payload.message],
         },
+      };
+    }
+
+    case 'SET_ENGAGED': {
+      if (!state.combatState) return state;
+      return {
+        ...state,
+        combatState: { ...state.combatState, engaged: action.payload.engaged },
       };
     }
 

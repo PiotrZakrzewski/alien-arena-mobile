@@ -6,6 +6,7 @@ export interface ZoneCellProps {
   hasPlayer: boolean;
   hasEnemy: boolean;
   highlighted?: boolean;
+  engaged?: boolean;
   onClick?: () => void;
 }
 
@@ -15,6 +16,7 @@ export function ZoneCell({
   hasPlayer,
   hasEnemy,
   highlighted = false,
+  engaged,
   onClick,
 }: ZoneCellProps) {
   const className = [
@@ -41,6 +43,11 @@ export function ZoneCell({
       </div>
       <div className="zone-cell__markers">
         {hasPlayer && <span className="zone-cell__marker zone-cell__marker--player" />}
+        {hasPlayer && hasEnemy && (
+          <span className={`zone-cell__range ${engaged ? 'zone-cell__range--adj' : 'zone-cell__range--sht'}`}>
+            {engaged ? 'ADJ' : 'SHT'}
+          </span>
+        )}
         {hasEnemy && <span className="zone-cell__marker zone-cell__marker--enemy" />}
       </div>
     </div>

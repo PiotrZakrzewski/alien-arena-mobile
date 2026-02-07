@@ -110,6 +110,28 @@ export function useCombatTurn() {
     setMoveSelecting(false);
   }, [combatState, currentCharacter, game, playerCharacter, enemyCharacter]);
 
+  const executeEngage = useCallback((role: CharacterRole) => {
+    if (!combatState) return;
+    game.setEngaged(true);
+    game.spendAction(false);
+    setActionsSpentThisTurn(prev => prev + 1);
+    const name = role === 'player' ? playerCharacter?.name : enemyCharacter?.name;
+    game.logCombat(`${name} engages — now at Adjacent range`);
+    setEffectLines([{ text: 'Engaged — now at Adjacent range', type: 'info' }]);
+    game.setCombatSubPhase('effect');
+  }, [combatState, game, playerCharacter, enemyCharacter]);
+
+  const executeDisengage = useCallback((role: CharacterRole) => {
+    if (!combatState) return;
+    game.setEngaged(false);
+    game.spendAction(false);
+    setActionsSpentThisTurn(prev => prev + 1);
+    const name = role === 'player' ? playerCharacter?.name : enemyCharacter?.name;
+    game.logCombat(`${name} disengages — now at Short range`);
+    setEffectLines([{ text: 'Disengaged — now at Short range', type: 'info' }]);
+    game.setCombatSubPhase('effect');
+  }, [combatState, game, playerCharacter, enemyCharacter]);
+
   const executeCover = useCallback((role: CharacterRole) => {
     if (!combatState) return;
     game.setCover(role, true);
@@ -132,7 +154,7 @@ export function useCombatTurn() {
     const defenderZone = opponentRole === 'player' ? combatState.playerZoneIndex : combatState.enemyZoneIndex;
     const distance = getZoneDistance(attackerZone, defenderZone);
 
-    const attackPool = calculateAttackPool(attacker, attackType, attackerStress, defenderCover, distance);
+    const attackPool = calculateAttackPool(attacker, attackType, attackerStress, defenderCover, distance, combatState.engaged);
     const defenseType = attackType === 'close-attack' ? 'close-combat' as const : 'mobility' as const;
     const defensePool = calculateDefensePool(defender, defenseType, defenderStress);
 
@@ -193,8 +215,14 @@ export function useCombatTurn() {
       case 'partial-cover':
         executeCover(currentRole);
         break;
+      case 'engage':
+        executeEngage(currentRole);
+        break;
+      case 'disengage':
+        executeDisengage(currentRole);
+        break;
     }
-  }, [combatState, currentRole, executeMove, executeAttack, executeCover]);
+  }, [combatState, currentRole, executeMove, executeAttack, executeCover, executeEngage, executeDisengage]);
 
   const onZoneClickForMove = useCallback((zoneIndex: number) => {
     if (!moveSelecting) return;

@@ -97,3 +97,67 @@ export const NoAttack: Story = {
       console.log('Action selected:', type, zone ? `to zone ${zone}` : ''),
   },
 };
+
+export const SameZoneNotEngaged: Story = {
+  args: {
+    actionsRemaining: 2,
+    legalActions: [
+      {
+        type: 'move',
+        speed: 'quick',
+        available: true,
+        moveOptions: [0, 2],
+      },
+      {
+        type: 'engage',
+        speed: 'quick',
+        available: true,
+      },
+      {
+        type: 'close-attack',
+        speed: 'full',
+        available: false,
+        reason: 'Must engage first',
+      },
+      {
+        type: 'ranged-attack',
+        speed: 'full',
+        available: true,
+      },
+    ],
+    onSelectAction: (type, zone) =>
+      console.log('Action selected:', type, zone ? `to zone ${zone}` : ''),
+  },
+};
+
+export const EngagedMelee: Story = {
+  args: {
+    actionsRemaining: 2,
+    legalActions: [
+      {
+        type: 'move',
+        speed: 'quick',
+        available: true,
+        moveOptions: [0, 2],
+      },
+      {
+        type: 'disengage',
+        speed: 'quick',
+        available: true,
+      },
+      {
+        type: 'close-attack',
+        speed: 'full',
+        available: true,
+      },
+      {
+        type: 'ranged-attack',
+        speed: 'full',
+        available: false,
+        reason: 'Cannot fire while engaged',
+      },
+    ],
+    onSelectAction: (type, zone) =>
+      console.log('Action selected:', type, zone ? `to zone ${zone}` : ''),
+  },
+};

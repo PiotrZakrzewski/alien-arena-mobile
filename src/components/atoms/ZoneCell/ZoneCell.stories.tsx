@@ -29,6 +29,10 @@ const meta = {
       control: 'boolean',
       description: 'Whether zone is highlighted',
     },
+    engaged: {
+      control: 'boolean',
+      description: 'Whether characters are engaged (adjacent range)',
+    },
   },
   decorators: [
     (Story) => (
@@ -119,6 +123,28 @@ export const HighlightedWithPlayer: Story = {
     hasPlayer: true,
     hasEnemy: false,
     highlighted: true,
+  },
+};
+
+export const BothEngaged: Story = {
+  args: {
+    name: 'ZONE 1',
+    cluttered: false,
+    hasPlayer: true,
+    hasEnemy: true,
+    highlighted: false,
+    engaged: true,
+  },
+};
+
+export const BothNotEngaged: Story = {
+  args: {
+    name: 'ZONE 1',
+    cluttered: false,
+    hasPlayer: true,
+    hasEnemy: true,
+    highlighted: false,
+    engaged: false,
   },
 };
 

@@ -55,6 +55,13 @@
   color: var(--color-bg);
 }
 
+/* Engaged state */
+.status-bar__badge--engaged {
+  background-color: var(--color-warning) !important;
+  border-color: var(--color-warning) !important;
+  color: var(--color-bg) !important;
+}
+
 /* Broken state */
 .status-bar--broken {
   opacity: 0.7;

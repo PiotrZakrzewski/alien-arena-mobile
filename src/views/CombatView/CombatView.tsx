@@ -40,6 +40,7 @@ export function CombatView() {
             variant: 'player',
             hasCover: combatState.playerCover,
             isBroken: playerCharacter.health <= 0,
+            isEngaged: combatState.engaged && combatState.playerZoneIndex === combatState.enemyZoneIndex,
           }}
           enemy={{
             name: enemyCharacter.name,
@@ -49,11 +50,13 @@ export function CombatView() {
             variant: 'enemy',
             hasCover: combatState.enemyCover,
             isBroken: enemyCharacter.health <= 0,
+            isEngaged: combatState.engaged && combatState.playerZoneIndex === combatState.enemyZoneIndex,
           }}
           zones={[...combatState.zoneMap.zones]}
           playerZoneIndex={combatState.playerZoneIndex}
           enemyZoneIndex={combatState.enemyZoneIndex}
           highlightedZones={turn.highlightedZones}
+          engaged={combatState.engaged}
           onZoneClick={turn.moveSelecting ? turn.onZoneClickForMove : undefined}
           mapExpanded={mapExpanded}
           onToggleMap={() => setMapManuallyToggled(prev => !prev)}

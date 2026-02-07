@@ -133,6 +133,13 @@ export function useGame() {
     [dispatch]
   );
 
+  const setEngaged = useCallback(
+    (engaged: boolean) => {
+      dispatch({ type: 'SET_ENGAGED', payload: { engaged } });
+    },
+    [dispatch]
+  );
+
   const endCombat = useCallback(
     (winner: CharacterRole) => {
       dispatch({ type: 'END_COMBAT', payload: { winner } });
@@ -164,6 +171,7 @@ export function useGame() {
     setCombatSubPhase,
     moveCharacter,
     setCover,
+    setEngaged,
     updateHealth,
     updateStress,
     spendAction,

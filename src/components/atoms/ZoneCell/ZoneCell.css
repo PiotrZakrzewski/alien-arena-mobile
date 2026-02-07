@@ -57,6 +57,20 @@
   box-shadow: 0 0 4px var(--color-danger);
 }
 
+.zone-cell__range {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.zone-cell__range--adj {
+  color: var(--color-warning);
+}
+
+.zone-cell__range--sht {
+  color: var(--color-primary-dim);
+}
+
 /* Highlighted state */
 .zone-cell--highlighted {
   border-color: var(--color-primary-bright);

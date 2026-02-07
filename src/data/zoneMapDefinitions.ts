@@ -44,4 +44,16 @@ export const COMBAT_ACTION_DEFINITIONS: CombatActionDefinition[] = [
     description: 'Use zone clutter for partial cover',
     speed: 'quick',
   },
+  {
+    type: 'engage',
+    label: 'ENGAGE',
+    description: 'Close to melee range',
+    speed: 'quick',
+  },
+  {
+    type: 'disengage',
+    label: 'DISENGAGE',
+    description: 'Pull back within zone',
+    speed: 'quick',
+  },
 ];
