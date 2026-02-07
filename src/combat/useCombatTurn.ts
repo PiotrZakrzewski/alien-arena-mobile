@@ -286,6 +286,15 @@ export function useCombatTurn() {
     resolveAttackResult();
   }, [resolveAttackResult]);
 
+  const passTurn = useCallback(() => {
+    if (!combatState) return;
+    game.logCombat(`${currentRole === 'player' ? playerCharacter?.name : enemyCharacter?.name} passes`);
+    game.advanceTurn();
+    setActionsSpentThisTurn(0);
+    setEffectLines([]);
+    setMoveSelecting(false);
+  }, [combatState, currentRole, playerCharacter, enemyCharacter, game]);
+
   const onEffectContinue = useCallback(() => {
     if (!combatState) return;
 
@@ -368,6 +377,7 @@ export function useCombatTurn() {
     // Sub-phase transitions
     startTurn,
     selectAction,
+    passTurn,
     onDiceRollContinue,
     onEffectContinue,
     onPush,

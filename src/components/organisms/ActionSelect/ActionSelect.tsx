@@ -9,12 +9,14 @@ export interface ActionSelectProps {
   actionsRemaining: number;
   legalActions: LegalAction[];
   onSelectAction: (type: CombatActionType, moveToZone?: number) => void;
+  onPass: () => void;
 }
 
 export function ActionSelect({
   actionsRemaining,
   legalActions,
   onSelectAction,
+  onPass,
 }: ActionSelectProps) {
   const [selectedMove, setSelectedMove] = useState<CombatActionType | null>(null);
 
@@ -96,6 +98,13 @@ export function ActionSelect({
           );
         })}
       </div>
+      <button
+        className="action-select__pass"
+        onClick={onPass}
+        type="button"
+      >
+        PASS &gt;&gt;
+      </button>
     </div>
   );
 }

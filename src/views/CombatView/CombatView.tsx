@@ -61,6 +61,7 @@ export function CombatView() {
             actionsRemaining={turn.effectiveActionsRemaining}
             legalActions={turn.legalActions}
             onSelectAction={turn.selectAction}
+            onPass={turn.passTurn}
           />
         )}
 

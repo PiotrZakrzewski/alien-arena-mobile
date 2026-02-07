@@ -8,6 +8,9 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  args: {
+    onPass: () => console.log('Pass turn'),
+  },
   decorators: [
     (Story) => (
       <div style={{ backgroundColor: 'var(--color-bg)', padding: '20px', minHeight: '100vh' }}>
