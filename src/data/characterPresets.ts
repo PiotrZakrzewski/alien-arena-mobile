@@ -19,7 +19,7 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'marine',
     strength: 4,
     agility: 3,
-    maxHealth: 10,
+    maxHealth: 4,
     skills: {},
   },
   {
@@ -29,7 +29,7 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'marshal',
     strength: 3,
     agility: 3,
-    maxHealth: 10,
+    maxHealth: 3,
     skills: {},
   },
   {
@@ -39,7 +39,7 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'roughneck',
     strength: 5,
     agility: 2,
-    maxHealth: 11,
+    maxHealth: 4,
     skills: {},
   },
   {
@@ -49,7 +49,7 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'officer',
     strength: 3,
     agility: 3,
-    maxHealth: 9,
+    maxHealth: 3,
     skills: {},
   },
   {
@@ -59,7 +59,7 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'kid',
     strength: 2,
     agility: 5,
-    maxHealth: 8,
+    maxHealth: 4,
     skills: {},
   },
   {
@@ -69,7 +69,7 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'medic',
     strength: 3,
     agility: 4,
-    maxHealth: 9,
+    maxHealth: 4,
     skills: {},
   },
 ];
