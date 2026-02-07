@@ -1,7 +1,25 @@
 import type { Weapon, Armor } from '../state/types';
 
+// --- Deterministic dice queue for testing ---
+const diceQueue: number[] = [];
+
+export function queueDice(values: number[]): void {
+  diceQueue.push(...values);
+}
+
+export function clearDiceQueue(): void {
+  diceQueue.length = 0;
+}
+
+export function getDiceQueueLength(): number {
+  return diceQueue.length;
+}
+
 export function rollDice(count: number): number[] {
-  return Array.from({ length: count }, () => Math.floor(Math.random() * 6) + 1);
+  return Array.from({ length: count }, () => {
+    if (diceQueue.length > 0) return diceQueue.shift()!;
+    return Math.floor(Math.random() * 6) + 1;
+  });
 }
 
 export function countSuccesses(results: number[]): number {

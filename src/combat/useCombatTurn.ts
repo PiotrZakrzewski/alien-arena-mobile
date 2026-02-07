@@ -162,7 +162,9 @@ export function useCombatTurn() {
       stressDice: attackerStress,
       baseDiceResults: attackBaseDice,
       stressDiceResults: attackStressDice,
-      pushState: { allowed: true },
+      pushState: attackStressDice.some(v => v === 1)
+        ? { allowed: false, reason: 'Stress die showed 1 — cannot push' }
+        : { allowed: true },
       successText: 'Strong attack — now the defender rolls...',
       failureText: 'No successes — defender may escape unharmed.',
     });
@@ -208,12 +210,16 @@ export function useCombatTurn() {
     // Push: +1 stress, re-roll non-successes from base dice only
     game.updateStress(pendingAttack.attacker, 1);
 
+    const nonSuccessCount = pendingAttack.attackBaseDice.filter(v => v !== 6).length;
+    const rerolled = rollDice(nonSuccessCount);
+    let rerollIdx = 0;
     const newBaseDice = pendingAttack.attackBaseDice.map(v =>
-      v === 6 ? v : Math.floor(Math.random() * 6) + 1
+      v === 6 ? v : rerolled[rerollIdx++]
     );
+    const extraStressDie = rollDice(1);
     const newStressDice = [
       ...pendingAttack.attackStressDice,
-      Math.floor(Math.random() * 6) + 1, // extra stress die from push
+      ...extraStressDie, // extra stress die from push
     ];
 
     const updated = {

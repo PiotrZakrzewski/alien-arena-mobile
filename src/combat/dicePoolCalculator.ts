@@ -48,8 +48,8 @@ export function calculateAttackPool(
 
   // Cover penalty for ranged
   if (attackType === 'ranged-attack' && targetHasCover) {
-    sources.push({ label: 'TARGET COVER', count: -1 });
-    baseDice -= 1;
+    sources.push({ label: 'TARGET COVER', count: -2 });
+    baseDice -= 2;
   }
 
   // Minimum 1 base die

@@ -5,6 +5,7 @@ import { TurnAnnounce } from '../../components/organisms/TurnAnnounce';
 import { ActionSelect } from '../../components/organisms/ActionSelect';
 import { DiceRollResult } from '../../components/organisms/DiceRollResult';
 import { EffectSummary } from '../../components/organisms/EffectSummary';
+import { DebugDicePanel } from '../../components/atoms/DebugDicePanel';
 import './CombatView.css';
 
 export function CombatView() {
@@ -96,6 +97,8 @@ export function CombatView() {
           />
         )}
       </div>
+
+      {import.meta.env.DEV && <DebugDicePanel />}
     </div>
   );
 }
