@@ -23,8 +23,11 @@ export interface Character {
   career: Career;
   strength: number;
   agility: number;
+  wits: number;
+  empathy: number;
   health: number;
   maxHealth: number;
+  resolve: number;
   skills: Record<string, number>;
   weapon: Weapon;
   armor: Armor;
@@ -77,7 +80,7 @@ export interface CombatState {
 
 // --- Game state ---
 
-export type GamePhase = 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat-setup' | 'initiative' | 'combat' | 'result';
+export type GamePhase = 'character-select' | 'stats' | 'derived-stats' | 'skills' | 'items' | 'talents' | 'combat-setup' | 'initiative' | 'combat' | 'result';
 
 export interface GameState {
   playerCharacter: Character | null;
@@ -89,7 +92,7 @@ export interface GameState {
 
 export type GameAction =
   | { type: 'SELECT_CHARACTER'; payload: { role: CharacterRole; character: Character } }
-  | { type: 'UPDATE_STAT'; payload: { role: CharacterRole; stat: 'strength' | 'agility'; value: number } }
+  | { type: 'UPDATE_STAT'; payload: { role: CharacterRole; stat: 'strength' | 'agility' | 'wits' | 'empathy'; value: number } }
   | { type: 'UPDATE_SKILL'; payload: { role: CharacterRole; skillKey: string; value: number } }
   | { type: 'SET_WEAPON'; payload: { role: CharacterRole; weapon: Weapon } }
   | { type: 'SET_ARMOR'; payload: { role: CharacterRole; armor: Armor } }

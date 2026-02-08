@@ -19,12 +19,20 @@ export function StatsEditor() {
     updateStat('player', 'agility', value);
   };
 
+  const handleWitsChange = (value: number) => {
+    updateStat('player', 'wits', value);
+  };
+
+  const handleEmpathyChange = (value: number) => {
+    updateStat('player', 'empathy', value);
+  };
+
   const handleBack = () => {
     setPhase('character-select');
   };
 
   const handleNext = () => {
-    setPhase('skills');
+    setPhase('derived-stats');
   };
 
   return (
@@ -36,15 +44,19 @@ export function StatsEditor() {
       <CombatStatsPanel
         strength={playerCharacter.strength}
         agility={playerCharacter.agility}
+        wits={playerCharacter.wits}
+        empathy={playerCharacter.empathy}
         onStrengthChange={handleStrengthChange}
         onAgilityChange={handleAgilityChange}
+        onWitsChange={handleWitsChange}
+        onEmpathyChange={handleEmpathyChange}
       />
       <div className="stats-editor__footer">
         <PhaseNavigation
           onBack={handleBack}
           backLabel="Back"
           onNext={handleNext}
-          nextLabel="Skills"
+          nextLabel="Next"
         />
       </div>
     </div>

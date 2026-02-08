@@ -12,8 +12,11 @@ export const initialGameState: GameState = {
     career: 'roughneck',
     strength: 5,
     agility: 2,
+    wits: 2,
+    empathy: 2,
     health: 4,
     maxHealth: 4,
+    resolve: 2,
     skills: { closeCombat: 3, stamina: 2 },
     weapon: { type: 'close', modifier: 1, damage: 2, minRange: 'adjacent', maxRange: 'adjacent', armorPiercing: false },
     armor: { rating: 1 },
@@ -45,10 +48,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'UPDATE_STAT':
-      return updateCharacterSlot(state, action.payload.role, (char) => ({
-        ...char,
-        [action.payload.stat]: action.payload.value,
-      }));
+      return updateCharacterSlot(state, action.payload.role, (char) => {
+        const updated = { ...char, [action.payload.stat]: action.payload.value };
+        if (action.payload.stat === 'strength' || action.payload.stat === 'agility') {
+          updated.maxHealth = Math.ceil((updated.strength + updated.agility) / 2);
+          updated.health = Math.min(updated.health, updated.maxHealth);
+        }
+        if (action.payload.stat === 'wits' || action.payload.stat === 'empathy') {
+          updated.resolve = Math.ceil((updated.wits + updated.empathy) / 2);
+        }
+        return updated;
+      });
 
     case 'UPDATE_SKILL':
       return updateCharacterSlot(state, action.payload.role, (char) => ({

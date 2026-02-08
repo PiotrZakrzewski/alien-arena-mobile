@@ -1,0 +1,1 @@
+export { DerivedStatsView } from './DerivedStatsView';

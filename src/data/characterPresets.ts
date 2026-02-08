@@ -7,7 +7,8 @@ export interface CharacterPreset {
   career: Career;
   strength: number;
   agility: number;
-  maxHealth: number;
+  wits: number;
+  empathy: number;
   skills: Record<string, number>;
 }
 
@@ -19,7 +20,8 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'marine',
     strength: 4,
     agility: 3,
-    maxHealth: 4,
+    wits: 2,
+    empathy: 2,
     skills: {},
   },
   {
@@ -29,7 +31,8 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'marshal',
     strength: 3,
     agility: 3,
-    maxHealth: 3,
+    wits: 3,
+    empathy: 3,
     skills: {},
   },
   {
@@ -39,7 +42,8 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'roughneck',
     strength: 5,
     agility: 2,
-    maxHealth: 4,
+    wits: 2,
+    empathy: 2,
     skills: {},
   },
   {
@@ -49,7 +53,8 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'officer',
     strength: 3,
     agility: 3,
-    maxHealth: 3,
+    wits: 3,
+    empathy: 4,
     skills: {},
   },
   {
@@ -59,7 +64,8 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'kid',
     strength: 2,
     agility: 5,
-    maxHealth: 4,
+    wits: 3,
+    empathy: 3,
     skills: {},
   },
   {
@@ -69,7 +75,8 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
     career: 'medic',
     strength: 3,
     agility: 4,
-    maxHealth: 4,
+    wits: 3,
+    empathy: 4,
     skills: {},
   },
 ];

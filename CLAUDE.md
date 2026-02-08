@@ -66,7 +66,7 @@ src/
 
 ### Organisms
 - **CharacterHeader** - Navigation + name display
-- **CombatStatsPanel** - STR and AGI stat rows; supports `readOnly` prop
+- **CombatStatsPanel** - STR, AGI, WIT, EMP stat rows (WIT/EMP optional); supports `readOnly` prop
 - **SkillsPanel** - All skill rows from SKILL_DEFINITIONS
 - **PhaseNavigation** - Back/Next buttons for phase transitions
 - **DiceRollResult** - Full dice roll panel: breakdown, pool, success count, push mechanics, context text
@@ -78,7 +78,8 @@ src/
 
 ### Views
 - **CharacterSelector** - Browse presets with description text, select copies preset to active character
-- **StatsEditor** - Editable STR/AGI stats for selected character
+- **StatsEditor** - Editable STR/AGI/WIT/EMP stats for selected character
+- **DerivedStatsView** - Read-only view of all 4 attributes plus derived Health and Resolve values
 - **SkillsEditor** - Editable skills for selected character
 - **ItemsEditor** - Weapon type/stats and armor rating editor
 - **TalentsEditor** - Career-filtered talent picker with stackable talents
@@ -105,7 +106,8 @@ interface CharacterPreset {
   career: Career;       // Career type for talent filtering
   strength: number;
   agility: number;
-  maxHealth: number;
+  wits: number;
+  empathy: number;
   skills: Record<string, number>;
 }
 ```
@@ -114,7 +116,9 @@ interface CharacterPreset {
 ```ts
 function createCharacterFromPreset(preset: CharacterPreset): Character
 ```
-Deep-copies a preset into a full Character with initialized health, default weapon (unarmed), no armor, empty talents.
+Deep-copies a preset into a full Character with derived health/resolve, default weapon (unarmed), no armor, empty talents.
+- **Health** = `ceil((STR + AGI) / 2)`
+- **Resolve** = `ceil((WIT + EMP) / 2)`
 
 ### Skill Definitions (src/data/skillDefinitions.ts)
 ```ts
@@ -167,7 +171,7 @@ interface CombatSetup {
   enemyCharacter: Character | null    // Active enemy instance
   combatSetup: CombatSetup            // Combat type and advantage side
   combatState: CombatState | null     // Active combat state (null until INIT_COMBAT)
-  phase: 'character-select' | 'stats' | 'skills' | 'items' | 'talents' | 'combat-setup' | 'initiative' | 'combat' | 'result'
+  phase: 'character-select' | 'stats' | 'derived-stats' | 'skills' | 'items' | 'talents' | 'combat-setup' | 'initiative' | 'combat' | 'result'
 }
 ```
 
@@ -181,8 +185,11 @@ interface CombatSetup {
   career: Career;          // Career type (copied from preset)
   strength: number;
   agility: number;
+  wits: number;
+  empathy: number;
   health: number;
-  maxHealth: number;
+  maxHealth: number;       // Derived: ceil((STR + AGI) / 2)
+  resolve: number;         // Derived: ceil((WIT + EMP) / 2)
   skills: Record<string, number>;
   weapon: Weapon;          // Equipped weapon (unarmed/close/ranged)
   armor: Armor;            // Equipped armor (rating 0-3)
@@ -218,7 +225,7 @@ All character-mutating actions take a `role: 'player' | 'enemy'` field.
 | Action | Purpose |
 |--------|---------|
 | `SELECT_CHARACTER` | Clone preset → slot |
-| `UPDATE_STAT` | Edit strength/agility on active character |
+| `UPDATE_STAT` | Edit strength/agility/wits/empathy; auto-recomputes maxHealth or resolve |
 | `UPDATE_SKILL` | Edit a skill on active character |
 | `SET_WEAPON` | Replace weapon on active character |
 | `SET_ARMOR` | Replace armor on active character |
@@ -321,14 +328,14 @@ Central hook connecting reducer, legal actions, dice resolution, and AI. Uses re
 ## Navigation Flow
 
 ```
-CharacterSelector → [Select] → StatsEditor → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor → [Setup] → CombatSetupView → [Fight!] → InitiativeView → [Continue] → CombatView → [Result] → ResultView → [Play Again] → CharacterSelector
-                              ← [Back] ←    ← [Stats] ←              ← [Skills] ←          ← [Items] ←                          ← [Talents] ←
+CharacterSelector → [Select] → StatsEditor → [Next] → DerivedStatsView → [Skills] → SkillsEditor → [Items] → ItemsEditor → [Talents] → TalentsEditor → [Setup] → CombatSetupView → [Fight!] → InitiativeView → [Continue] → CombatView → [Result] → ResultView → [Play Again] → CharacterSelector
+                              ← [Back] ←                ← [Stats] ←                 ← [Back] ←              ← [Skills] ←          ← [Items] ←                          ← [Talents] ←
 ```
 
 - App.tsx routes based on `phase` state
 - Each phase has its own dedicated view — one concern per screen (mobile-first)
 - CharacterSelector browses presets (description text), select creates Character and navigates to stats
-- StatsEditor edits STR/AGI, SkillsEditor edits skills — each view is standalone
+- StatsEditor edits STR/AGI/WIT/EMP, DerivedStatsView shows derived Health/Resolve, SkillsEditor edits skills — each view is standalone
 - Back navigates to previous phase, Next to following phase
 - Combat ends when either character reaches 0 HP → ResultView
 - Play Again resets health, clears combat state, returns to character select

@@ -19,7 +19,7 @@ export function useGame() {
   );
 
   const updateStat = useCallback(
-    (role: CharacterRole, stat: 'strength' | 'agility', value: number) => {
+    (role: CharacterRole, stat: 'strength' | 'agility' | 'wits' | 'empathy', value: number) => {
       dispatch({ type: 'UPDATE_STAT', payload: { role, stat, value } });
     },
     [dispatch]

@@ -16,7 +16,7 @@ export function SkillsEditor() {
   };
 
   const handleBack = () => {
-    setPhase('stats');
+    setPhase('derived-stats');
   };
 
   const handleNext = () => {
@@ -36,7 +36,7 @@ export function SkillsEditor() {
       <div className="skills-editor__footer">
         <PhaseNavigation
           onBack={handleBack}
-          backLabel="Stats"
+          backLabel="Back"
           onNext={handleNext}
           nextLabel="Items"
         />
